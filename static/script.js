@@ -1,42 +1,56 @@
-let currentUser = null;
+function showLogin() {
+    document.getElementById("loginForm").classList.remove("hidden");
+    document.getElementById("signupForm").classList.add("hidden");
 
-/* ================================
-   CREATE ACCOUNT
-================================ */
+    document.getElementById("loginTab").classList.add("active-tab");
+    document.getElementById("signupTab").classList.remove("active-tab");
+
+    document.getElementById("authMessage").innerText = "";
+}
+
+
+function showSignup() {
+    document.getElementById("signupForm").classList.remove("hidden");
+    document.getElementById("loginForm").classList.add("hidden");
+
+    document.getElementById("signupTab").classList.add("active-tab");
+    document.getElementById("loginTab").classList.remove("active-tab");
+
+    document.getElementById("authMessage").innerText = "";
+}
+
+
+function showAuthMessage(message, success) {
+    const box = document.getElementById("authMessage");
+
+    if (!box) return;
+
+    box.innerText = message;
+    box.style.color = success ? "#16a34a" : "#dc2626";
+}
+
 
 function signupUser() {
-    const username = document
-        .getElementById("signupUsername")
-        .value
-        .trim();
 
-    const password = document
-        .getElementById("signupPassword")
-        .value
-        .trim();
+    const username =
+        document.getElementById("signupUsername").value.trim();
 
-    if (username.length < 3) {
+    const password =
+        document.getElementById("signupPassword").value.trim();
+
+    if (username === "" || password === "") {
         showAuthMessage(
-            "Username must contain at least 3 characters.",
+            "Please enter username and password",
             false
         );
         return;
     }
 
-    if (password.length < 4) {
-        showAuthMessage(
-            "Password must contain at least 4 characters.",
-            false
-        );
-        return;
-    }
-
-    const users =
+    let users =
         JSON.parse(localStorage.getItem("symbolSudokuUsers")) || [];
 
-    const existingUser = users.find(
-        user => user.username.toLowerCase() === username.toLowerCase()
-    );
+    const existingUser =
+        users.find(user => user.username === username);
 
     if (existingUser) {
         showAuthMessage(
@@ -56,8 +70,6 @@ function signupUser() {
         JSON.stringify(users)
     );
 
-    currentUser = username;
-
     localStorage.setItem(
         "symbolSudokuCurrentUser",
         username
@@ -70,73 +82,75 @@ function signupUser() {
 
     setTimeout(() => {
         openGameMenu(username);
-    }, 700);
+    }, 500);
 }
 
 
-/* ================================
-   SIGN IN
-================================ */
-
 function loginUser() {
-    const username = document
-        .getElementById("loginUsername")
-        .value
-        .trim();
 
-    const password = document
-        .getElementById("loginPassword")
-        .value
-        .trim();
+    const username =
+        document.getElementById("loginUsername").value.trim();
 
-    const users =
-        JSON.parse(localStorage.getItem("symbolSudokuUsers")) || [];
+    const password =
+        document.getElementById("loginPassword").value.trim();
 
-    const user = users.find(
-        item =>
-            item.username.toLowerCase() === username.toLowerCase() &&
-            item.password === password
-    );
-
-    if (!user) {
+    if (username === "" || password === "") {
         showAuthMessage(
-            "Invalid username or password.",
+            "Please enter username and password",
             false
         );
         return;
     }
 
-    currentUser = user.username;
+    let users =
+        JSON.parse(localStorage.getItem("symbolSudokuUsers")) || [];
+
+    const user =
+        users.find(
+            user =>
+                user.username === username &&
+                user.password === password
+        );
+
+    if (!user) {
+        showAuthMessage(
+            "Incorrect username or password",
+            false
+        );
+        return;
+    }
 
     localStorage.setItem(
         "symbolSudokuCurrentUser",
-        user.username
+        username
     );
 
-    openGameMenu(user.username);
+    openGameMenu(username);
 }
 
 
-/* ================================
-   OPEN GAME MENU
-================================ */
-
 function openGameMenu(username) {
 
-    document
-        .getElementById("loginScreen")
-        .classList
-        .remove("active");
+    const loginScreen =
+        document.getElementById("loginScreen");
 
-    document
-        .getElementById("startScreen")
-        .classList
-        .add("active");
+    const startScreen =
+        document.getElementById("startScreen");
 
-    document
-        .getElementById("gameScreen")
-        .classList
-        .remove("active");
+    const gameScreen =
+        document.getElementById("gameScreen");
+
+    if (loginScreen) {
+        loginScreen.classList.remove("active");
+    }
+
+    if (gameScreen) {
+        gameScreen.classList.remove("active");
+    }
+
+    if (startScreen) {
+        startScreen.classList.add("active");
+    }
 
     const usernameDisplay =
         document.getElementById("usernameDisplay");
@@ -145,13 +159,12 @@ function openGameMenu(username) {
         usernameDisplay.innerText = username;
     }
 
-    currentUser = username;
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
-
-/* ================================
-   LOGOUT
-================================ */
 
 function logoutUser() {
 
@@ -159,94 +172,50 @@ function logoutUser() {
         "symbolSudokuCurrentUser"
     );
 
-    currentUser = null;
+    const loginScreen =
+        document.getElementById("loginScreen");
 
-    document
-        .getElementById("startScreen")
-        .classList
-        .remove("active");
+    const startScreen =
+        document.getElementById("startScreen");
 
-    document
-        .getElementById("gameScreen")
-        .classList
-        .remove("active");
+    const gameScreen =
+        document.getElementById("gameScreen");
 
-    document
-        .getElementById("loginScreen")
-        .classList
-        .add("active");
+    if (startScreen) {
+        startScreen.classList.remove("active");
+    }
 
-    document
-        .getElementById("loginUsername")
-        .value = "";
+    if (gameScreen) {
+        gameScreen.classList.remove("active");
+    }
 
-    document
-        .getElementById("loginPassword")
-        .value = "";
+    if (loginScreen) {
+        loginScreen.classList.add("active");
+    }
 
-    document
-        .getElementById("signupUsername")
-        .value = "";
-
-    document
-        .getElementById("signupPassword")
-        .value = "";
+    document.getElementById("loginUsername").value = "";
+    document.getElementById("loginPassword").value = "";
 }
 
 
-/* ================================
-   AUTH MESSAGE
-================================ */
+function checkLoggedInUser() {
 
-function showAuthMessage(message, success) {
+    const username =
+        localStorage.getItem(
+            "symbolSudokuCurrentUser"
+        );
 
-    const messageBox =
-        document.getElementById("authMessage");
-
-    messageBox.innerText = message;
-
-    if (success) {
-        messageBox.style.color = "#16a34a";
-    } else {
-        messageBox.style.color = "#dc2626";
+    if (username) {
+        openGameMenu(username);
     }
 }
 
-
-/* ================================
-   ENTER GAME
-================================ */
-
-function enterGame() {
-
-    document
-        .getElementById("startScreen")
-        .classList
-        .remove("active");
-
-    document
-        .getElementById("gameScreen")
-        .classList
-        .add("active");
-}
-
-
-/* ================================
-   AUTO LOGIN
-================================ */
 
 window.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        const savedUser =
-            localStorage.getItem(
-                "symbolSudokuCurrentUser"
-            );
-
-        if (savedUser) {
-            openGameMenu(savedUser);
-        }
+        checkLoggedInUser();
 
     }
 );
