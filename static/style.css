@@ -11,14 +11,14 @@ h1 {
 
 #game {
     background: white;
-    padding: 30px;
+    padding: 20px;
     margin: auto;
     width: 400px;
     border-radius: 10px;
 }
 
 button {
-    padding: 12px 25px;
+    padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
 }
