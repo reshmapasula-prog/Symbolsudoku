@@ -1,102 +1,127 @@
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 body {
+    margin: 0;
     min-height: 100vh;
-
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #172554, #4c1d95, #1e3a8a);
     display: flex;
     justify-content: center;
     align-items: center;
-
-    padding: 30px 15px;
-
-    font-family: Arial, sans-serif;
-
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 30px;
 }
 
-.game-card {
+.app {
     width: 100%;
-    max-width: 680px;
+    display: flex;
+    justify-content: center;
+}
 
-    background: white;
-
-    padding: 30px;
-
+.card {
+    width: min(850px, 95vw);
+    background: rgba(255, 255, 255, 0.96);
     border-radius: 25px;
-
+    padding: 35px;
     text-align: center;
-
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 }
 
 h1 {
-    font-size: 38px;
-    color: #292929;
-    margin-bottom: 8px;
+    margin: 0;
+    color: #222;
+    font-size: 42px;
 }
 
-p {
-    color: #777;
-    margin-bottom: 25px;
+.subtitle {
+    color: #666;
+    margin-bottom: 30px;
 }
 
-/* PERFECT 9 x 9 SUDOKU BOARD */
+h2 {
+    color: #333;
+}
 
-#game {
-    width: 100%;
-    max-width: 540px;
-
-    margin: 0 auto;
-
+.symbol-options {
     display: grid;
-
-    grid-template-columns: repeat(9, 1fr);
-
-    aspect-ratio: 1 / 1;
-
-    border: 3px solid #222;
-
-    overflow: hidden;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    max-width: 600px;
+    margin: 25px auto;
 }
 
-/* EACH SQUARE */
+.symbol-option {
+    height: 70px;
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    background: white;
+    font-size: 32px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.symbol-option:hover {
+    transform: scale(1.06);
+    border-color: #7c3aed;
+}
+
+.symbol-option.selected {
+    background: #7c3aed;
+    color: white;
+    border-color: #5b21b6;
+    box-shadow: 0 6px 15px rgba(124, 58, 237, 0.35);
+}
+
+#selectedCount {
+    font-size: 18px;
+    font-weight: bold;
+    color: #444;
+}
+
+button {
+    border: none;
+    background: #6d28d9;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 17px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+button:hover {
+    background: #5b21b6;
+}
+
+button:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+}
+
+.board {
+    width: min(630px, 90vw);
+    aspect-ratio: 1 / 1;
+    margin: 25px auto;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    border: 3px solid #222;
+}
 
 .cell {
-    min-width: 0;
-
+    border: 1px solid #cfcfcf;
+    background: white;
+    font-size: clamp(18px, 3vw, 32px);
     display: flex;
-    justify-content: center;
     align-items: center;
-
-    background: #ffffff;
-
-    border-right: 1px solid #cfcfcf;
-    border-bottom: 1px solid #cfcfcf;
-
-    font-size: clamp(16px, 3vw, 26px);
-
-    font-weight: bold;
-
+    justify-content: center;
     cursor: pointer;
-
-    user-select: none;
+    padding: 0;
 }
 
-/* REMOVE OUTER EXTRA BORDERS */
-
-.cell:nth-child(9n) {
-    border-right: none;
+.cell:hover {
+    background: #ede9fe;
 }
-
-.cell:nth-child(n+73) {
-    border-bottom: none;
-}
-
-/* THICK LINES AFTER COLUMN 3 */
 
 .cell:nth-child(3n) {
     border-right: 3px solid #222;
@@ -106,81 +131,40 @@ p {
     border-right: none;
 }
 
-/* THICK LINE AFTER ROW 3 */
-
-.cell:nth-child(n+19):nth-child(-n+27) {
-    border-bottom: 3px solid #222;
-}
-
-/* THICK LINE AFTER ROW 6 */
-
+.cell:nth-child(n+19):nth-child(-n+27),
 .cell:nth-child(n+46):nth-child(-n+54) {
     border-bottom: 3px solid #222;
 }
 
-/* HOVER */
-
-.cell:hover {
-    background: #e8e5ff;
-}
-
-/* BUTTONS */
-
-.buttons {
-    margin-top: 25px;
-
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-}
-
-button {
-    border: none;
-
-    padding: 13px 25px;
-
-    border-radius: 10px;
-
-    background: #5b5bd6;
-
-    color: white;
-
-    font-size: 16px;
-
+.cell.given {
+    background: #f1f5f9;
     font-weight: bold;
-
-    cursor: pointer;
+    cursor: default;
 }
 
-button:hover {
-    background: #4545b5;
+.cell.selected-cell {
+    background: #ddd6fe;
 }
 
-/* MOBILE */
+.game-top p {
+    color: #666;
+}
 
 @media (max-width: 600px) {
 
-    .game-card {
-        padding: 20px 12px;
+    .card {
+        padding: 20px 10px;
     }
 
     h1 {
-        font-size: 28px;
+        font-size: 30px;
     }
 
-    p {
-        font-size: 14px;
+    .symbol-options {
+        grid-template-columns: repeat(4, 1fr);
     }
 
-    #game {
-        width: 100%;
-    }
-
-    .buttons {
-        flex-direction: column;
-    }
-
-    button {
-        width: 100%;
+    .symbol-option {
+        height: 60px;
     }
 }
