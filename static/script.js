@@ -1,853 +1,355 @@
-let selectedSize = 3;
-let selectedDifficulty = "easy";
-let selectedPattern = "classic";
+let boardSize = null;
+let difficulty = null;
+let levelNumber = 1;
+
+let symbols = [];
+let solution = [];
+let puzzle = [];
 
 let selectedCell = null;
 let selectedSymbol = null;
 
-let solution = [];
-let puzzle = [];
-
-
-/* ==================================
-   SYMBOL PATTERNS
-================================== */
-
-const patterns = {
-
-    classic: [
-        "★", "♥", "♦", "♣",
-        "●", "▲", "■", "✿", "✦"
-    ],
-
-    nature: [
-        "🌸", "🌻", "🌿", "🍀",
-        "🌼", "🌷", "🍁", "🌵", "🌙"
-    ],
-
-    fruit: [
-        "🍎", "🍊", "🍋", "🍇",
-        "🍓", "🍉", "🍒", "🍍", "🥭"
-    ],
-
-    space: [
-        "🚀", "🌙", "⭐", "🪐",
-        "☄️", "🌍", "👽", "🛰️", "✨"
-    ]
-
+const symbolSets = {
+    3: ["★", "♥", "♦"],
+    4: ["★", "♥", "♦", "♣"],
+    5: ["★", "♥", "♦", "♣", "●"],
+    6: ["★", "♥", "♦", "♣", "●", "▲"]
 };
 
 
-/* ==================================
-   PAGE FUNCTIONS
-================================== */
+function chooseSize(size) {
 
-function showPage(pageId) {
+    boardSize = size;
 
-    document.querySelectorAll(".page")
-        .forEach(page => {
-            page.classList.remove("active");
-        });
+    document.querySelectorAll(".size-buttons button").forEach(button => {
+        button.classList.remove("selected");
 
-    document
-        .getElementById(pageId)
-        .classList.add("active");
-}
-
-
-function openSetup() {
-
-    showPage("setupPage");
-
-    updateSetupPreview();
-}
-
-
-function goHome() {
-
-    showPage("startPage");
-}
-
-
-/* ==================================
-   SIZE BUTTONS
-================================== */
-
-document.querySelectorAll(".size-btn")
-    .forEach(button => {
-
-        button.addEventListener("click", function () {
-
-            document.querySelectorAll(".size-btn")
-                .forEach(btn => {
-                    btn.classList.remove("selected");
-                });
-
-            this.classList.add("selected");
-
-            selectedSize = Number(
-                this.dataset.size
-            );
-
-            updateSetupPreview();
-        });
-
+        if (button.innerText.includes(size + " × " + size)) {
+            button.classList.add("selected");
+        }
     });
 
-
-/* ==================================
-   DIFFICULTY BUTTONS
-================================== */
-
-document.querySelectorAll(".difficulty-btn")
-    .forEach(button => {
-
-        button.addEventListener("click", function () {
-
-            document.querySelectorAll(".difficulty-btn")
-                .forEach(btn => {
-                    btn.classList.remove("selected");
-                });
-
-            this.classList.add("selected");
-
-            selectedDifficulty =
-                this.dataset.difficulty;
-
-            updateSetupPreview();
-        });
-
-    });
-
-
-/* ==================================
-   PATTERN BUTTONS
-================================== */
-
-document.querySelectorAll(".pattern-btn")
-    .forEach(button => {
-
-        button.addEventListener("click", function () {
-
-            document.querySelectorAll(".pattern-btn")
-                .forEach(btn => {
-                    btn.classList.remove("selected");
-                });
-
-            this.classList.add("selected");
-
-            selectedPattern =
-                this.dataset.pattern;
-
-            updateSetupPreview();
-        });
-
-    });
-
-
-/* ==================================
-   UPDATE PREVIEW
-================================== */
-
-function updateSetupPreview() {
-
-    const difficultyText =
-        selectedDifficulty.charAt(0).toUpperCase()
-        +
-        selectedDifficulty.slice(1);
-
-    const patternText =
-        selectedPattern.charAt(0).toUpperCase()
-        +
-        selectedPattern.slice(1);
-
-    document.getElementById("setupPreview")
-        .textContent =
-        `${selectedSize} × ${selectedSize} • ${difficultyText} • ${patternText} Symbols`;
+    updateSelectionText();
 }
 
 
-/* ==================================
-   START GAME
-================================== */
+function chooseLevel(level) {
+
+    difficulty = level;
+
+    document.querySelectorAll(".level-buttons button").forEach(button => {
+        button.classList.remove("selected");
+
+        if (button.innerText === level) {
+            button.classList.add("selected");
+        }
+    });
+
+    updateSelectionText();
+}
+
+
+function updateSelectionText() {
+
+    const text = document.getElementById("selectionText");
+    const enterButton = document.getElementById("enterBtn");
+
+    if (boardSize && difficulty) {
+        text.innerHTML =
+            `<b>${boardSize} × ${boardSize}</b> Symbol Sudoku - <b>${difficulty}</b>`;
+        enterButton.disabled = false;
+    }
+}
+
 
 function startGame() {
+
+    if (!boardSize || !difficulty) {
+        return;
+    }
+
+    levelNumber = 1;
+
+    document.getElementById("startScreen").classList.remove("active");
+    document.getElementById("gameScreen").classList.add("active");
+
+    createGame();
+}
+
+
+function goToStart() {
+
+    document.getElementById("gameScreen").classList.remove("active");
+    document.getElementById("startScreen").classList.add("active");
+
+    selectedCell = null;
+    selectedSymbol = null;
+}
+
+
+function createGame() {
 
     selectedCell = null;
     selectedSymbol = null;
 
-    generateGame();
+    symbols = symbolSets[boardSize];
 
-    showPage("gamePage");
+    solution = generateSolution(boardSize);
+
+    puzzle = solution.map(row => [...row]);
+
+    removeCells();
+
+    document.getElementById("gameInfo").innerText =
+        `${boardSize} × ${boardSize} Symbol Sudoku`;
+
+    document.getElementById("levelName").innerText = difficulty;
+    document.getElementById("levelNumber").innerText = levelNumber;
+
+    document.getElementById("message").innerText = "";
+    document.getElementById("message").className = "message";
+
+    document.getElementById("nextBtn").classList.add("hidden");
+
+    renderBoard();
+    renderSymbolOptions();
 }
 
 
-/* ==================================
-   GENERATE GAME
-================================== */
+function generateSolution(size) {
 
-function generateGame() {
-
-    const size = selectedSize;
-
-    const symbols =
-        patterns[selectedPattern]
-            .slice(0, size);
-
-    solution = generateSolution(
-        size,
-        symbols
-    );
-
-    puzzle = createPuzzle(
-        solution,
-        selectedDifficulty
-    );
-
-    renderGame(
-        symbols
-    );
-}
-
-
-/* ==================================
-   GENERATE VALID SOLUTION
-   LATIN SUDOKU STYLE
-================================== */
-
-function generateSolution(
-    size,
-    symbols
-) {
-
-    let result = [];
+    let grid = [];
 
     for (let row = 0; row < size; row++) {
 
-        let currentRow = [];
+        let newRow = [];
 
-        for (
-            let col = 0;
-            col < size;
-            col++
-        ) {
-
-            const index =
-                (row + col) % size;
-
-            currentRow.push(
-                symbols[index]
-            );
+        for (let col = 0; col < size; col++) {
+            newRow.push(symbols[(row + col) % size]);
         }
 
-        result.push(currentRow);
+        grid.push(newRow);
     }
 
-    /* Shuffle rows */
-
-    shuffle(result);
-
-
-    /* Shuffle symbols in every board */
-
-    const shuffledSymbols =
-        [...symbols];
-
-    shuffle(shuffledSymbols);
-
-    for (
-        let row = 0;
-        row < size;
-        row++
-    ) {
-
-        for (
-            let col = 0;
-            col < size;
-            col++
-        ) {
-
-            const oldIndex =
-                symbols.indexOf(
-                    result[row][col]
-                );
-
-            result[row][col] =
-                shuffledSymbols[oldIndex];
-        }
-    }
-
-
-    /* Shuffle columns */
-
-    const columnOrder =
-        Array.from(
-            { length: size },
-            (_, index) => index
-        );
-
-    shuffle(columnOrder);
-
-    result = result.map(row =>
-        columnOrder.map(
-            index => row[index]
-        )
-    );
-
-    return result;
+    return grid;
 }
 
 
-/* ==================================
-   CREATE PUZZLE
-================================== */
+function removeCells() {
 
-function createPuzzle(
-    board,
-    difficulty
-) {
+    let removePercentage = 0.30;
 
-    const size = board.length;
-
-    let puzzleBoard =
-        board.map(row => [...row]);
-
-
-    let removePercentage;
-
-    if (difficulty === "easy") {
-
-        removePercentage = 0.35;
-
-    } else if (
-        difficulty === "medium"
-    ) {
-
-        removePercentage = 0.55;
-
-    } else {
-
-        removePercentage = 0.70;
+    if (difficulty === "Medium") {
+        removePercentage = 0.48;
     }
 
-
-    const totalCells =
-        size * size;
-
-    const removeCount =
-        Math.floor(
-            totalCells *
-            removePercentage
-        );
-
-
-    let positions =
-        Array.from(
-            { length: totalCells },
-            (_, index) => index
-        );
-
-
-    shuffle(positions);
-
-
-    for (
-        let i = 0;
-        i < removeCount;
-        i++
-    ) {
-
-        const position =
-            positions[i];
-
-        const row =
-            Math.floor(
-                position / size
-            );
-
-        const col =
-            position % size;
-
-        puzzleBoard[row][col] = "";
+    if (difficulty === "Hard") {
+        removePercentage = 0.62;
     }
 
-    return puzzleBoard;
+    let totalCells = boardSize * boardSize;
+    let removeCount = Math.floor(totalCells * removePercentage);
+
+    let positions = [];
+
+    for (let i = 0; i < totalCells; i++) {
+        positions.push(i);
+    }
+
+    positions.sort(() => Math.random() - 0.5);
+
+    for (let i = 0; i < removeCount; i++) {
+
+        let position = positions[i];
+
+        let row = Math.floor(position / boardSize);
+        let col = position % boardSize;
+
+        puzzle[row][col] = "";
+    }
 }
 
 
-/* ==================================
-   RENDER GAME
-================================== */
+function renderBoard() {
 
-function renderGame(symbols) {
-
-    const board =
-        document.getElementById(
-            "sudokuBoard"
-        );
-
-    const symbolOptions =
-        document.getElementById(
-            "symbolOptions"
-        );
-
+    const board = document.getElementById("sudokuBoard");
 
     board.innerHTML = "";
-    symbolOptions.innerHTML = "";
-
 
     board.style.gridTemplateColumns =
-        `repeat(${selectedSize}, 1fr)`;
+        `repeat(${boardSize}, 1fr)`;
 
     board.style.gridTemplateRows =
-        `repeat(${selectedSize}, 1fr)`;
+        `repeat(${boardSize}, 1fr)`;
 
+    for (let row = 0; row < boardSize; row++) {
 
-    /* Game information */
+        for (let col = 0; col < boardSize; col++) {
 
-    const difficultyText =
-        selectedDifficulty.charAt(0).toUpperCase()
-        +
-        selectedDifficulty.slice(1);
-
-    document.getElementById("gameInfo")
-        .textContent =
-        `${selectedSize} × ${selectedSize} • ${difficultyText}`;
-
-
-    document.getElementById("patternDisplay")
-        .textContent =
-        symbols.join("  ");
-
-
-    /* Create board cells */
-
-    for (
-        let row = 0;
-        row < selectedSize;
-        row++
-    ) {
-
-        for (
-            let col = 0;
-            col < selectedSize;
-            col++
-        ) {
-
-            const cell =
-                document.createElement("div");
+            const cell = document.createElement("div");
 
             cell.className = "cell";
-
 
             cell.dataset.row = row;
             cell.dataset.col = col;
 
+            cell.innerText = puzzle[row][col];
 
-            const value =
-                puzzle[row][col];
-
-
-            cell.textContent =
-                value;
-
-
-            if (value !== "") {
-
-                cell.classList.add(
-                    "given"
-                );
-
+            if (puzzle[row][col] !== "") {
+                cell.classList.add("fixed");
             } else {
-
-                cell.addEventListener(
-                    "click",
-                    function () {
-
-                        selectCell(
-                            this
-                        );
-                    }
-                );
+                cell.addEventListener("click", () => selectCell(cell));
             }
 
-
-            addBoxBorders(
-                cell,
-                row,
-                col
-            );
-
-
-            board.appendChild(
-                cell
-            );
-        }
-    }
-
-
-    /* Create symbol buttons BELOW board */
-
-    symbols.forEach(symbol => {
-
-        const symbolButton =
-            document.createElement(
-                "button"
-            );
-
-        symbolButton.className =
-            "symbol-choice";
-
-        symbolButton.textContent =
-            symbol;
-
-
-        symbolButton.addEventListener(
-            "click",
-            function () {
-
-                selectSymbol(
-                    symbol,
-                    this
-                );
-            }
-        );
-
-
-        symbolOptions.appendChild(
-            symbolButton
-        );
-    });
-
-
-    document.getElementById(
-        "message"
-    ).textContent = "";
-}
-
-
-/* ==================================
-   ADD SUBGRID BOX BORDERS
-================================== */
-
-function addBoxBorders(
-    cell,
-    row,
-    col
-) {
-
-    /*
-      4×4 = 2×2 boxes
-      6×6 = 2×3 boxes
-      9×9 = 3×3 boxes
-    */
-
-    if (
-        selectedSize === 4
-    ) {
-
-        if (
-            (col + 1) % 2 === 0
-            &&
-            col !== selectedSize - 1
-        ) {
-
-            cell.classList.add(
-                "box-right"
-            );
-        }
-
-        if (
-            (row + 1) % 2 === 0
-            &&
-            row !== selectedSize - 1
-        ) {
-
-            cell.classList.add(
-                "box-bottom"
-            );
-        }
-    }
-
-
-    if (
-        selectedSize === 6
-    ) {
-
-        if (
-            (col + 1) % 3 === 0
-            &&
-            col !== selectedSize - 1
-        ) {
-
-            cell.classList.add(
-                "box-right"
-            );
-        }
-
-        if (
-            (row + 1) % 2 === 0
-            &&
-            row !== selectedSize - 1
-        ) {
-
-            cell.classList.add(
-                "box-bottom"
-            );
-        }
-    }
-
-
-    if (
-        selectedSize === 9
-    ) {
-
-        if (
-            (col + 1) % 3 === 0
-            &&
-            col !== selectedSize - 1
-        ) {
-
-            cell.classList.add(
-                "box-right"
-            );
-        }
-
-        if (
-            (row + 1) % 3 === 0
-            &&
-            row !== selectedSize - 1
-        ) {
-
-            cell.classList.add(
-                "box-bottom"
-            );
+            board.appendChild(cell);
         }
     }
 }
 
-
-/* ==================================
-   SELECT CELL
-================================== */
 
 function selectCell(cell) {
 
-    document.querySelectorAll(".cell")
-        .forEach(item => {
-
-            item.classList.remove(
-                "selected-cell"
-            );
-        });
-
-
-    selectedCell = cell;
-
-    cell.classList.add(
-        "selected-cell"
-    );
-
-
-    if (selectedSymbol !== null) {
-
-        placeSymbol();
-    }
-}
-
-
-/* ==================================
-   SELECT SYMBOL
-================================== */
-
-function selectSymbol(
-    symbol,
-    button
-) {
-
-    selectedSymbol = symbol;
-
-
-    document
-        .querySelectorAll(
-            ".symbol-choice"
-        )
-        .forEach(item => {
-
-            item.classList.remove(
-                "active"
-            );
-        });
-
-
-    button.classList.add(
-        "active"
-    );
-
-
-    if (selectedCell !== null) {
-
-        placeSymbol();
-    }
-}
-
-
-/* ==================================
-   PLACE SYMBOL
-================================== */
-
-function placeSymbol() {
-
-    if (
-        selectedCell === null
-        ||
-        selectedSymbol === null
-    ) {
+    if (cell.classList.contains("fixed")) {
         return;
     }
 
+    document.querySelectorAll(".cell").forEach(item => {
+        item.classList.remove("selected");
+    });
 
-    selectedCell.textContent =
-        selectedSymbol;
+    selectedCell = cell;
 
+    selectedCell.classList.add("selected");
 
-    checkGame();
+    if (selectedSymbol) {
+        placeSymbol();
+    }
 }
 
 
-/* ==================================
-   CHECK GAME
-================================== */
+function renderSymbolOptions() {
+
+    const options = document.getElementById("symbolOptions");
+
+    options.innerHTML = "";
+
+    symbols.forEach(symbol => {
+
+        const button = document.createElement("button");
+
+        button.className = "symbol-option";
+        button.innerText = symbol;
+
+        button.addEventListener("click", () => {
+
+            selectedSymbol = symbol;
+
+            document.querySelectorAll(".symbol-option").forEach(btn => {
+                btn.classList.remove("active-symbol");
+            });
+
+            button.classList.add("active-symbol");
+
+            if (selectedCell) {
+                placeSymbol();
+            }
+        });
+
+        options.appendChild(button);
+    });
+}
+
+
+function placeSymbol() {
+
+    if (!selectedCell || !selectedSymbol) {
+        return;
+    }
+
+    selectedCell.innerText = selectedSymbol;
+
+    selectedCell.classList.remove("wrong-cell");
+}
+
 
 function checkGame() {
 
-    const cells =
-        document.querySelectorAll(
-            ".cell"
-        );
-
-
     let complete = true;
-    let correct = true;
+    let wrong = false;
 
+    document.querySelectorAll(".cell").forEach(cell => {
 
-    cells.forEach(cell => {
+        const row = parseInt(cell.dataset.row);
+        const col = parseInt(cell.dataset.col);
 
-        const row =
-            Number(
-                cell.dataset.row
-            );
-
-        const col =
-            Number(
-                cell.dataset.col
-            );
-
+        if (cell.innerText === "") {
+            complete = false;
+        }
 
         if (
-            cell.textContent === ""
+            cell.innerText !== "" &&
+            cell.innerText !== solution[row][col]
         ) {
-
-            complete = false;
-
-        } else if (
-            cell.textContent !==
-            solution[row][col]
-        ) {
-
-            correct = false;
+            wrong = true;
+            cell.classList.add("wrong-cell");
         }
     });
 
+    const message = document.getElementById("message");
 
-    const message =
-        document.getElementById(
-            "message"
-        );
+    if (wrong) {
 
+        message.innerText = "❌ Wrong! Please correct the highlighted boxes.";
+        message.className = "message wrong-message";
 
-    if (
-        complete &&
-        correct
-    ) {
-
-        message.textContent =
-            "🎉 Congratulations! You solved the Symbol Sudoku!";
+        return;
     }
+
+    if (!complete) {
+
+        message.innerText = "⚠ Complete all boxes first.";
+        message.className = "message wrong-message";
+
+        return;
+    }
+
+    message.innerText =
+        `🎉 Correct! ${difficulty} Level ${levelNumber} completed!`;
+
+    message.className = "message correct-message";
+
+    document.getElementById("nextBtn").classList.remove("hidden");
 }
 
-
-/* ==================================
-   RESET GAME
-================================== */
 
 function resetGame() {
 
-    selectedCell = null;
-    selectedSymbol = null;
+    puzzle = solution.map(row => [...row]);
 
-    const symbols =
-        patterns[selectedPattern]
-            .slice(0, selectedSize);
-
-    renderGame(symbols);
-}
-
-
-/* ==================================
-   NEW GAME
-================================== */
-
-function newGame() {
+    removeCells();
 
     selectedCell = null;
     selectedSymbol = null;
 
-    generateGame();
+    document.getElementById("message").innerText = "";
+    document.getElementById("message").className = "message";
+
+    document.getElementById("nextBtn").classList.add("hidden");
+
+    renderBoard();
+    renderSymbolOptions();
 }
 
 
-/* ==================================
-   DARK / BRIGHT MODE
-================================== */
+function nextLevel() {
+
+    levelNumber++;
+
+    createGame();
+}
+
 
 function toggleTheme() {
 
-    document.body.classList.toggle(
-        "dark"
-    );
-}
-
-
-/* ==================================
-   SHUFFLE
-================================== */
-
-function shuffle(array) {
-
-    for (
-        let i = array.length - 1;
-        i > 0;
-        i--
-    ) {
-
-        const randomIndex =
-            Math.floor(
-                Math.random()
-                *
-                (i + 1)
-            );
-
-
-        [
-            array[i],
-            array[randomIndex]
-        ] =
-        [
-            array[randomIndex],
-            array[i]
-        ];
-    }
-
-    return array;
+    document.body.classList.toggle("dark");
 }
