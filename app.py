@@ -30,7 +30,7 @@ def signup():
             "success": False,
             "message": "Password must contain at least 4 characters."
         })
-
+        
     if username in users:
         return jsonify({
             "success": False,
