@@ -1,191 +1,319 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Symbol Sudoku</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 </head>
 
 <body>
 
-<div class="app">
+    <!-- =========================
+         LOGIN / SIGNUP SCREEN
+    ========================== -->
 
-    <!-- LOGIN SCREEN -->
-<div id="loginScreen" class="screen active">
+    <section id="loginScreen" class="screen active">
 
-    <div class="login-card">
+        <div class="auth-container">
 
-        <h1>✨ Symbol Sudoku</h1>
+            <!-- SIGN IN -->
+            <div class="auth-panel signin-panel">
 
-        <p class="login-subtitle">
-            Sign in and continue your Sudoku journey
-        </p>
+                <div class="auth-header">
+                    <div class="logo">✨</div>
+                    <h1>Symbol Sudoku</h1>
+                    <p>Welcome back! Continue your Sudoku journey.</p>
+                </div>
 
-        <div class="auth-tabs">
-            <button id="loginTab"
-                    class="auth-tab active-tab"
-                    onclick="showLogin()">
-                Sign In
-            </button>
+                <h2>Sign In</h2>
 
-            <button id="signupTab"
-                    class="auth-tab"
-                    onclick="showSignup()">
-                Create Account
-            </button>
+                <form
+                    id="loginForm"
+                    onsubmit="loginUser(); return false;"
+                >
+
+                    <input
+                        type="text"
+                        id="loginUsername"
+                        placeholder="Enter Username"
+                        required
+                    >
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        placeholder="Enter Password"
+                        required
+                    >
+
+                    <button
+                        type="submit"
+                        class="auth-button"
+                    >
+                        Sign In →
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- CREATE ACCOUNT -->
+            <div class="auth-panel signup-panel">
+
+                <div class="auth-header">
+                    <div class="logo">🎮</div>
+                    <h1>New Here?</h1>
+                    <p>Create an account and start playing.</p>
+                </div>
+
+                <h2>Create Account</h2>
+
+                <form
+                    id="signupForm"
+                    onsubmit="signupUser(); return false;"
+                >
+
+                    <input
+                        type="text"
+                        id="signupUsername"
+                        placeholder="Choose Username"
+                        required
+                    >
+
+                    <input
+                        type="password"
+                        id="signupPassword"
+                        placeholder="Create Password"
+                        required
+                    >
+
+                    <button
+                        type="submit"
+                        class="auth-button signup-button"
+                    >
+                        Create Account →
+                    </button>
+
+                </form>
+
+            </div>
+
         </div>
 
         <div id="authMessage"></div>
 
-        <div id="loginForm">
-
-            <input
-                type="text"
-                id="loginUsername"
-                placeholder="Enter Username"
-            >
-
-            <input
-                type="password"
-                id="loginPassword"
-                placeholder="Enter Password"
-            >
-
-            <button class="auth-button" onclick="loginUser()">
-                Sign In →
-            </button>
-
-        </div>
+    </section>
 
 
-        <div id="signupForm" class="hidden">
+    <!-- =========================
+         START / GAME MENU
+    ========================== -->
 
-            <input
-                type="text"
-                id="signupUsername"
-                placeholder="Choose Username"
-            >
+    <section id="startScreen" class="screen">
 
-            <input
-                type="password"
-                id="signupPassword"
-                placeholder="Create Password"
-            >
+        <div class="game-menu">
 
-            <button class="auth-button" onclick="signupUser()">
-                Create Account →
-            </button>
-
-        </div>
-
-        <button class="theme-btn" onclick="toggleTheme()">
-            🌙 / ☀ Theme
-        </button>
-
-    </div>
-
-</div>
-
-    <!-- START SCREEN -->
-    <div id="startScreen" class="screen">
-        <div class="welcome-card">
             <div class="user-bar">
-    <span>
-        👤 Welcome, <b id="usernameDisplay"></b>
-    </span>
 
-    <button onclick="logoutUser()">
-        Logout
-    </button>
-</div>
-            <h1>✨ Symbol Sudoku</h1>
-            <p>Choose your board size and difficulty</p>
+                <span>
+                    👤 Welcome,
+                    <b id="usernameDisplay"></b>
+                </span>
 
-            <h2>Choose Board Size</h2>
+                <button onclick="logoutUser()">
+                    Logout
+                </button>
 
-            <div class="size-buttons">
-                <button onclick="chooseSize(3)">3 × 3</button>
-                <button onclick="chooseSize(4)">4 × 4</button>
-                <button onclick="chooseSize(5)">5 × 5</button>
-                <button onclick="chooseSize(6)">6 × 6</button>
             </div>
 
-            <h2>Choose Difficulty</h2>
 
-            <div class="level-buttons">
-                <button class="easy" onclick="chooseLevel('Easy')">Easy</button>
-                <button class="medium" onclick="chooseLevel('Medium')">Medium</button>
-                <button class="hard" onclick="chooseLevel('Hard')">Hard</button>
-            </div>
-
-            <div id="selectionText" class="selection-text">
-                Select board size and difficulty
-            </div>
-
-            <button id="enterBtn" class="enter-btn" onclick="startGame()" disabled>
-                Enter the Game →
+            <button
+                class="theme-button"
+                onclick="toggleTheme()"
+            >
+                🌙 Dark / ☀️ Light
             </button>
 
-            <button class="theme-btn" onclick="toggleTheme()">
-                🌙 / ☀ Theme
-            </button>
-        </div>
-    </div>
+
+            <div class="menu-content">
+
+                <h1>✨ Symbol Sudoku</h1>
+
+                <p>
+                    Choose your Sudoku size
+                </p>
 
 
-    <!-- GAME SCREEN -->
-    <div id="gameScreen" class="screen">
+                <h2>Choose Box Size</h2>
 
-        <div class="game-card">
+                <div class="size-options">
 
-            <div class="top-bar">
-                <div>
-                    <h1>✨ Symbol Sudoku</h1>
-                    <p id="gameInfo"></p>
+                    <button onclick="chooseSize(3)">
+                        3 × 3
+                    </button>
+
+                    <button onclick="chooseSize(4)">
+                        4 × 4
+                    </button>
+
+                    <button onclick="chooseSize(5)">
+                        5 × 5
+                    </button>
+
+                    <button onclick="chooseSize(6)">
+                        6 × 6
+                    </button>
+
                 </div>
 
-                <button class="theme-btn small" onclick="toggleTheme()">
-                    🌙 / ☀
+
+                <h2>Choose Difficulty</h2>
+
+                <div class="difficulty-options">
+
+                    <button
+                        class="difficulty selected"
+                        onclick="chooseDifficulty('easy', this)"
+                    >
+                        Easy
+                    </button>
+
+                    <button
+                        class="difficulty"
+                        onclick="chooseDifficulty('medium', this)"
+                    >
+                        Medium
+                    </button>
+
+                    <button
+                        class="difficulty"
+                        onclick="chooseDifficulty('hard', this)"
+                    >
+                        Hard
+                    </button>
+
+                </div>
+
+
+                <div id="selectedPattern">
+                    Select a Sudoku size
+                </div>
+
+                <button
+                    id="startGameButton"
+                    class="start-button"
+                    onclick="startGame()"
+                >
+                    Enter the Game →
                 </button>
-            </div>
 
-            <div class="level-display">
-                <span id="levelName">Easy</span>
-                <span>Level <b id="levelNumber">1</b></span>
-            </div>
-
-            <div id="message" class="message"></div>
-
-            <div class="board-area">
-                <div id="sudokuBoard"></div>
-            </div>
-
-            <div class="choose-title">Choose a Symbol</div>
-
-            <div id="symbolOptions" class="symbol-options"></div>
-
-            <div class="controls">
-                <button class="reset-btn" onclick="resetGame()">↻ Reset</button>
-
-                <button class="new-btn" onclick="goToStart()">⚙ New Game</button>
-
-                <button id="checkBtn" class="check-btn" onclick="checkGame()">
-                    ✓ Check
-                </button>
-
-                <button id="nextBtn" class="next-btn hidden" onclick="nextLevel()">
-                    Next Level →
-                </button>
             </div>
 
         </div>
 
-    </div>
+    </section>
 
-</div>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- =========================
+         GAME SCREEN
+    ========================== -->
+
+    <section id="gameScreen" class="screen">
+
+        <div class="game-container">
+
+            <div class="game-topbar">
+
+                <div>
+                    👤 <b id="gameUsername"></b>
+                </div>
+
+                <button onclick="backToMenu()">
+                    ← Menu
+                </button>
+
+            </div>
+
+
+            <button
+                class="theme-button"
+                onclick="toggleTheme()"
+            >
+                🌙 Dark / ☀️ Light
+            </button>
+
+
+            <h1>✨ Symbol Sudoku</h1>
+
+            <p id="gameInfo">
+                Fill every row and column without repeating symbols!
+            </p>
+
+
+            <div
+                id="sudokuBoard"
+                class="sudoku-board"
+            ></div>
+
+
+            <div class="symbol-title">
+                Choose a Symbol
+            </div>
+
+
+            <div
+                id="symbolOptions"
+                class="symbol-options"
+            ></div>
+
+
+            <div
+                id="resultMessage"
+                class="result-message"
+            ></div>
+
+
+            <div class="game-buttons">
+
+                <button onclick="checkGame()">
+                    ✓ Check Game
+                </button>
+
+                <button onclick="resetGame()">
+                    ↻ Reset
+                </button>
+
+                <button onclick="newGame()">
+                    ✨ New Game
+                </button>
+
+                <button
+                    id="nextLevelButton"
+                    class="next-level hidden"
+                    onclick="nextLevel()"
+                >
+                    Next Level →
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <script
+        src="{{ url_for('static', filename='script.js') }}"
+    ></script>
 
 </body>
+
 </html>
