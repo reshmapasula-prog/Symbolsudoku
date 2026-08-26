@@ -88,8 +88,17 @@
 </div>
 
     <!-- START SCREEN -->
-    <div id="startScreen" class="screen active">
+    <div id="startScreen" class="screen">
         <div class="welcome-card">
+            <div class="user-bar">
+    <span>
+        👤 Welcome, <b id="usernameDisplay"></b>
+    </span>
+
+    <button onclick="logoutUser()">
+        Logout
+    </button>
+</div>
             <h1>✨ Symbol Sudoku</h1>
             <p>Choose your board size and difficulty</p>
 
