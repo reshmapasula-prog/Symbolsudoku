@@ -12,51 +12,250 @@
 
 <body>
 
-<div class="app">
+<!-- =========================
+     START PAGE
+========================= -->
 
-    <div class="card">
+<section id="startPage" class="page active">
 
-        <h1>🧩 Symbol Sudoku</h1>
-        <p class="subtitle">Choose 9 symbols for your Sudoku game</p>
+    <div class="hero-card">
 
-        <!-- SYMBOL SELECTION SCREEN -->
-        <div id="selectionScreen">
+        <div class="logo">🧩</div>
 
-            <h2>Choose Your Symbols</h2>
+        <h1>Symbol Sudoku</h1>
 
-            <div id="symbolOptions" class="symbol-options"></div>
+        <p>
+            A bright and fun Sudoku game with beautiful symbols,
+            different board sizes and difficulty levels.
+        </p>
 
-            <p id="selectedCount">Selected: 0 / 9</p>
+        <button class="main-btn" onclick="openSetup()">
+            🎮 Enter the Game
+        </button>
 
-            <button id="startButton" onclick="startGame()" disabled>
-                Start Game
+        <button class="theme-btn" onclick="toggleTheme()">
+            ☀️ / 🌙 Theme
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SETUP PAGE
+========================= -->
+
+<section id="setupPage" class="page">
+
+    <div class="setup-card">
+
+        <button class="back-btn" onclick="goHome()">
+            ← Back
+        </button>
+
+        <h1>Choose Your Game</h1>
+
+        <div class="setup-section">
+
+            <h2>📐 Choose Board Size</h2>
+
+            <div class="size-options">
+
+                <button class="option-btn size-btn selected"
+                        data-size="3">
+                    3 × 3
+                </button>
+
+                <button class="option-btn size-btn"
+                        data-size="4">
+                    4 × 4
+                </button>
+
+                <button class="option-btn size-btn"
+                        data-size="5">
+                    5 × 5
+                </button>
+
+                <button class="option-btn size-btn"
+                        data-size="6">
+                    6 × 6
+                </button>
+
+                <button class="option-btn size-btn"
+                        data-size="9">
+                    9 × 9
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="setup-section">
+
+            <h2>🎯 Difficulty</h2>
+
+            <div class="difficulty-options">
+
+                <button class="option-btn difficulty-btn selected"
+                        data-difficulty="easy">
+                    😊 Easy
+                </button>
+
+                <button class="option-btn difficulty-btn"
+                        data-difficulty="medium">
+                    😎 Medium
+                </button>
+
+                <button class="option-btn difficulty-btn"
+                        data-difficulty="hard">
+                    🔥 Hard
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="setup-section">
+
+            <h2>🎨 Choose Symbol Pattern</h2>
+
+            <div class="pattern-options">
+
+                <button class="pattern-btn selected"
+                        data-pattern="classic">
+                    ⭐ ♥ ♦ ♣
+                </button>
+
+                <button class="pattern-btn"
+                        data-pattern="nature">
+                    🌸 🌻 🌿 🍀
+                </button>
+
+                <button class="pattern-btn"
+                        data-pattern="fruit">
+                    🍎 🍊 🍋 🍇
+                </button>
+
+                <button class="pattern-btn"
+                        data-pattern="space">
+                    🚀 🌙 ⭐ 🪐
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="chosen-info">
+
+            <h3>Selected Game</h3>
+
+            <p id="setupPreview">
+                3 × 3 • Easy • Classic Symbols
+            </p>
+
+        </div>
+
+
+        <button class="main-btn start-game-btn"
+                onclick="startGame()">
+            ▶ Start Sudoku
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     GAME PAGE
+========================= -->
+
+<section id="gamePage" class="page">
+
+    <div class="game-container">
+
+        <div class="game-header">
+
+            <div>
+
+                <h1>🧩 Symbol Sudoku</h1>
+
+                <p id="gameInfo">
+                    3 × 3 • Easy
+                </p>
+
+            </div>
+
+            <button class="theme-btn"
+                    onclick="toggleTheme()">
+                ☀️ / 🌙
             </button>
 
         </div>
 
 
-        <!-- GAME SCREEN -->
-        <div id="gameScreen" style="display: none;">
+        <div class="selected-pattern-box">
 
-            <div class="game-top">
-                <div>
-                    <h2>Symbol Sudoku</h2>
-                    <p>Fill every row and column without repeating symbols!</p>
-                </div>
-            </div>
+            <span>Selected Pattern:</span>
 
-            <div id="gameBoard" class="board"></div>
+            <strong id="patternDisplay">
+                ⭐ ♥ ♦
+            </strong>
 
-            <div class="buttons">
-                <button onclick="newGame()">New Game</button>
-                <button onclick="backToSelection()">Change Symbols</button>
+        </div>
+
+
+        <!-- SUDOKU BOARD -->
+
+        <div id="sudokuBoard"
+             class="sudoku-board">
+        </div>
+
+
+        <!-- SYMBOL OPTIONS -->
+
+        <div class="symbol-section">
+
+            <h2>Choose a Symbol</h2>
+
+            <div id="symbolOptions"
+                 class="symbol-options">
             </div>
 
         </div>
 
+
+        <!-- GAME BUTTONS -->
+
+        <div class="game-buttons">
+
+            <button class="main-btn small-btn"
+                    onclick="resetGame()">
+                🔄 Reset
+            </button>
+
+            <button class="main-btn small-btn"
+                    onclick="newGame()">
+                ✨ New Game
+            </button>
+
+            <button class="back-btn game-back"
+                    onclick="openSetup()">
+                ⚙ Change Settings
+            </button>
+
+        </div>
+
+        <p id="message"></p>
+
     </div>
 
-</div>
+</section>
+
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 
