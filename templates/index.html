@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,19 +12,17 @@
 
 <body>
 
-    <div class="container">
+    <div class="game-card">
 
         <h1>🧩 Symbol Sudoku</h1>
 
-        <p class="subtitle">
-            Fill the grid without repeating symbols!
-        </p>
+        <p>Fill the grid without repeating symbols!</p>
 
         <div id="game"></div>
 
-        <div class="controls">
-            <button onclick="newGame()">🎮 New Game</button>
-            <button onclick="resetGame()">🔄 Reset</button>
+        <div class="buttons">
+            <button onclick="newGame()">New Game</button>
+            <button onclick="resetGame()">Reset</button>
         </div>
 
     </div>
@@ -33,5 +30,4 @@
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
-
 </html>
