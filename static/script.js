@@ -1,221 +1,874 @@
-function showLogin() {
-    document.getElementById("loginForm").classList.remove("hidden");
-    document.getElementById("signupForm").classList.add("hidden");
+let currentUser = "";
 
-    document.getElementById("loginTab").classList.add("active-tab");
-    document.getElementById("signupTab").classList.remove("active-tab");
+let boardSize = 3;
+let difficulty = "Easy";
+let levelNumber = 1;
 
-    document.getElementById("authMessage").innerText = "";
-}
+let selectedCell = null;
 
+let currentBoard = [];
+let solutionBoard = [];
 
-function showSignup() {
-    document.getElementById("signupForm").classList.remove("hidden");
-    document.getElementById("loginForm").classList.add("hidden");
-
-    document.getElementById("signupTab").classList.add("active-tab");
-    document.getElementById("loginTab").classList.remove("active-tab");
-
-    document.getElementById("authMessage").innerText = "";
-}
-
-
-function showAuthMessage(message, success) {
-    const box = document.getElementById("authMessage");
-
-    if (!box) return;
-
-    box.innerText = message;
-    box.style.color = success ? "#16a34a" : "#dc2626";
-}
+const allSymbols = [
+    "★",
+    "♥",
+    "♦",
+    "♣",
+    "▲",
+    "●"
+];
 
 
-function signupUser() {
+/* =========================
+   LOGIN
+========================= */
+
+async function loginUser() {
 
     const username =
-        document.getElementById("signupUsername").value.trim();
+        document
+        .getElementById("loginUsername")
+        .value
+        .trim();
 
     const password =
-        document.getElementById("signupPassword").value.trim();
+        document
+        .getElementById("loginPassword")
+        .value
+        .trim();
 
-    if (username === "" || password === "") {
-        showAuthMessage(
-            "Please enter username and password",
+    const message =
+        document.getElementById("loginMessage");
+
+    message.innerText = "";
+
+    if (username === "") {
+        showLoginMessage(
+            "Please enter your username.",
             false
         );
         return;
     }
 
-    let users =
-        JSON.parse(localStorage.getItem("symbolSudokuUsers")) || [];
-
-    const existingUser =
-        users.find(user => user.username === username);
-
-    if (existingUser) {
-        showAuthMessage(
-            "Username already exists. Please sign in.",
+    if (password === "") {
+        showLoginMessage(
+            "Please enter your password.",
             false
         );
         return;
     }
 
-    users.push({
-        username: username,
-        password: password
-    });
+    try {
 
-    localStorage.setItem(
-        "symbolSudokuUsers",
-        JSON.stringify(users)
-    );
+        const response =
+            await fetch("/login", {
 
-    localStorage.setItem(
-        "symbolSudokuCurrentUser",
-        username
-    );
+                method: "POST",
 
-    showAuthMessage(
-        "Account created successfully!",
-        true
-    );
+                headers: {
+                    "Content-Type":
+                    "application/json"
+                },
 
-    setTimeout(() => {
-        openGameMenu(username);
-    }, 500);
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+
+            });
+
+        const data =
+            await response.json();
+
+        if (data.success) {
+
+            currentUser =
+                data.username;
+
+            showLoginMessage(
+                "Login successful! Welcome " +
+                currentUser + "!",
+                true
+            );
+
+            setTimeout(
+                openGameMenu,
+                500
+            );
+
+        } else {
+
+            showLoginMessage(
+                data.message,
+                false
+            );
+        }
+
+    } catch (error) {
+
+        showLoginMessage(
+            "Server error. Please try again.",
+            false
+        );
+    }
 }
 
 
-function loginUser() {
+/* =========================
+   SIGN UP
+========================= */
+
+async function signupUser() {
 
     const username =
-        document.getElementById("loginUsername").value.trim();
+        document
+        .getElementById("signupUsername")
+        .value
+        .trim();
 
     const password =
-        document.getElementById("loginPassword").value.trim();
+        document
+        .getElementById("signupPassword")
+        .value
+        .trim();
 
-    if (username === "" || password === "") {
-        showAuthMessage(
-            "Please enter username and password",
+    const message =
+        document.getElementById(
+            "signupMessage"
+        );
+
+    message.innerText = "";
+
+    if (username.length < 3) {
+
+        showSignupMessage(
+            "Username must contain at least 3 characters.",
             false
         );
+
         return;
     }
 
-    let users =
-        JSON.parse(localStorage.getItem("symbolSudokuUsers")) || [];
+    if (password.length < 4) {
 
-    const user =
-        users.find(
-            user =>
-                user.username === username &&
-                user.password === password
-        );
-
-    if (!user) {
-        showAuthMessage(
-            "Incorrect username or password",
+        showSignupMessage(
+            "Password must contain at least 4 characters.",
             false
         );
+
         return;
     }
 
-    localStorage.setItem(
-        "symbolSudokuCurrentUser",
-        username
-    );
+    try {
 
-    openGameMenu(username);
+        const response =
+            await fetch("/signup", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                    "application/json"
+                },
+
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+
+            });
+
+        const data =
+            await response.json();
+
+        if (data.success) {
+
+            currentUser =
+                data.username;
+
+            showSignupMessage(
+                "Account created successfully!",
+                true
+            );
+
+            setTimeout(
+                openGameMenu,
+                600
+            );
+
+        } else {
+
+            showSignupMessage(
+                data.message,
+                false
+            );
+        }
+
+    } catch (error) {
+
+        showSignupMessage(
+            "Server error. Please try again.",
+            false
+        );
+    }
 }
 
 
-function openGameMenu(username) {
+function showLoginMessage(
+    text,
+    success
+) {
 
-    const loginScreen =
-        document.getElementById("loginScreen");
+    const message =
+        document.getElementById(
+            "loginMessage"
+        );
 
-    const startScreen =
-        document.getElementById("startScreen");
+    message.innerText = text;
 
-    const gameScreen =
-        document.getElementById("gameScreen");
+    message.style.color =
+        success
+        ? "#16a34a"
+        : "#dc2626";
+}
 
-    if (loginScreen) {
-        loginScreen.classList.remove("active");
-    }
 
-    if (gameScreen) {
-        gameScreen.classList.remove("active");
-    }
+function showSignupMessage(
+    text,
+    success
+) {
 
-    if (startScreen) {
-        startScreen.classList.add("active");
-    }
+    const message =
+        document.getElementById(
+            "signupMessage"
+        );
 
-    const usernameDisplay =
-        document.getElementById("usernameDisplay");
+    message.innerText = text;
 
-    if (usernameDisplay) {
-        usernameDisplay.innerText = username;
-    }
+    message.style.color =
+        success
+        ? "#ffffff"
+        : "#ffd4d4";
+}
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+
+/* =========================
+   OPEN GAME MENU
+========================= */
+
+function openGameMenu() {
+
+    document
+    .getElementById("loginScreen")
+    .classList.remove("active");
+
+    document
+    .getElementById("gameScreen")
+    .classList.remove("active");
+
+    document
+    .getElementById("startScreen")
+    .classList.add("active");
+
+    document
+    .getElementById("usernameDisplay")
+    .innerText = currentUser;
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logoutUser() {
+
+    await fetch("/logout", {
+        method: "POST"
     });
+
+    currentUser = "";
+
+    document
+    .getElementById("startScreen")
+    .classList.remove("active");
+
+    document
+    .getElementById("gameScreen")
+    .classList.remove("active");
+
+    document
+    .getElementById("loginScreen")
+    .classList.add("active");
 }
 
 
-function logoutUser() {
+/* =========================
+   SELECT SIZE
+========================= */
 
-    localStorage.removeItem(
-        "symbolSudokuCurrentUser"
-    );
+function selectSize(size, button) {
 
-    const loginScreen =
-        document.getElementById("loginScreen");
+    boardSize = size;
 
-    const startScreen =
-        document.getElementById("startScreen");
+    document
+    .querySelectorAll(".size-btn")
+    .forEach(function(btn) {
 
-    const gameScreen =
-        document.getElementById("gameScreen");
-
-    if (startScreen) {
-        startScreen.classList.remove("active");
-    }
-
-    if (gameScreen) {
-        gameScreen.classList.remove("active");
-    }
-
-    if (loginScreen) {
-        loginScreen.classList.add("active");
-    }
-
-    document.getElementById("loginUsername").value = "";
-    document.getElementById("loginPassword").value = "";
-}
-
-
-function checkLoggedInUser() {
-
-    const username =
-        localStorage.getItem(
-            "symbolSudokuCurrentUser"
+        btn.classList.remove(
+            "selected-option"
         );
 
-    if (username) {
-        openGameMenu(username);
+    });
+
+    button.classList.add(
+        "selected-option"
+    );
+}
+
+
+/* =========================
+   SELECT LEVEL
+========================= */
+
+function selectLevel(level, button) {
+
+    difficulty = level;
+
+    document
+    .querySelectorAll(".level-btn")
+    .forEach(function(btn) {
+
+        btn.classList.remove(
+            "selected-option"
+        );
+
+    });
+
+    button.classList.add(
+        "selected-option"
+    );
+}
+
+
+/* =========================
+   START GAME
+========================= */
+
+function startGame() {
+
+    document
+    .getElementById("startScreen")
+    .classList.remove("active");
+
+    document
+    .getElementById("gameScreen")
+    .classList.add("active");
+
+    updateGameInfo();
+
+    generateGame();
+}
+
+
+function updateGameInfo() {
+
+    document
+    .getElementById("gameDetails")
+    .innerText =
+
+        boardSize +
+        " × " +
+        boardSize +
+        " Symbol Sudoku • " +
+        difficulty +
+        " • Level " +
+        levelNumber;
+}
+
+
+/* =========================
+   SYMBOLS
+========================= */
+
+function getSymbols() {
+
+    return allSymbols.slice(
+        0,
+        boardSize
+    );
+}
+
+
+/* =========================
+   CREATE SOLUTION
+========================= */
+
+function createSolution() {
+
+    const symbols =
+        getSymbols();
+
+    const board = [];
+
+    for (
+        let row = 0;
+        row < boardSize;
+        row++
+    ) {
+
+        board[row] = [];
+
+        for (
+            let col = 0;
+            col < boardSize;
+            col++
+        ) {
+
+            board[row][col] =
+                symbols[
+                    (row + col) %
+                    boardSize
+                ];
+        }
+    }
+
+    return board;
+}
+
+
+/* =========================
+   GENERATE GAME
+========================= */
+
+function generateGame() {
+
+    selectedCell = null;
+
+    solutionBoard =
+        createSolution();
+
+    currentBoard =
+        solutionBoard.map(
+            row => [...row]
+        );
+
+    let removePercent;
+
+    if (difficulty === "Easy") {
+
+        removePercent = 0.35;
+
+    } else if (
+        difficulty === "Medium"
+    ) {
+
+        removePercent = 0.55;
+
+    } else {
+
+        removePercent = 0.70;
+    }
+
+
+    let positions = [];
+
+    for (
+        let i = 0;
+        i < boardSize * boardSize;
+        i++
+    ) {
+
+        positions.push(i);
+    }
+
+    shuffle(positions);
+
+    const removeCount =
+        Math.floor(
+            positions.length *
+            removePercent
+        );
+
+    for (
+        let i = 0;
+        i < removeCount;
+        i++
+    ) {
+
+        const position =
+            positions[i];
+
+        const row =
+            Math.floor(
+                position / boardSize
+            );
+
+        const col =
+            position % boardSize;
+
+        currentBoard[row][col] = "";
+    }
+
+    drawBoard();
+
+    drawSymbols();
+
+    document
+    .getElementById("resultMessage")
+    .innerText = "";
+}
+
+
+/* =========================
+   DRAW BOARD
+========================= */
+
+function drawBoard() {
+
+    const board =
+        document.getElementById(
+            "sudokuBoard"
+        );
+
+    board.innerHTML = "";
+
+    board.style.gridTemplateColumns =
+        `repeat(${boardSize}, 1fr)`;
+
+    for (
+        let row = 0;
+        row < boardSize;
+        row++
+    ) {
+
+        for (
+            let col = 0;
+            col < boardSize;
+            col++
+        ) {
+
+            const cell =
+                document.createElement(
+                    "div"
+                );
+
+            cell.className = "cell";
+
+            cell.dataset.row = row;
+            cell.dataset.col = col;
+
+            if (
+                currentBoard[row][col] !== ""
+            ) {
+
+                cell.innerText =
+                    currentBoard[row][col];
+
+                cell.classList.add(
+                    "given"
+                );
+
+            } else {
+
+                cell.onclick =
+                    function() {
+                        selectCell(cell);
+                    };
+            }
+
+            board.appendChild(cell);
+        }
+    }
+}
+
+
+/* =========================
+   SELECT CELL
+========================= */
+
+function selectCell(cell) {
+
+    document
+    .querySelectorAll(".cell")
+    .forEach(function(item) {
+
+        item.classList.remove(
+            "selected"
+        );
+
+    });
+
+    selectedCell = cell;
+
+    selectedCell.classList.add(
+        "selected"
+    );
+}
+
+
+/* =========================
+   DRAW SYMBOLS
+========================= */
+
+function drawSymbols() {
+
+    const container =
+        document.getElementById(
+            "symbolOptions"
+        );
+
+    container.innerHTML = "";
+
+    const symbols =
+        getSymbols();
+
+    symbols.forEach(
+        function(symbol) {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.className =
+                "symbol-btn";
+
+            button.innerText =
+                symbol;
+
+            button.onclick =
+                function() {
+
+                    placeSymbol(symbol);
+
+                };
+
+            container.appendChild(button);
+        }
+    );
+}
+
+
+/* =========================
+   PLACE SYMBOL
+========================= */
+
+function placeSymbol(symbol) {
+
+    if (!selectedCell) {
+
+        alert(
+            "Please select an empty box first."
+        );
+
+        return;
+    }
+
+    selectedCell.innerText = symbol;
+
+    const row =
+        Number(
+            selectedCell.dataset.row
+        );
+
+    const col =
+        Number(
+            selectedCell.dataset.col
+        );
+
+    currentBoard[row][col] =
+        symbol;
+}
+
+
+/* =========================
+   CHECK GAME
+========================= */
+
+function checkGame() {
+
+    let correct = true;
+    let incomplete = false;
+
+    for (
+        let row = 0;
+        row < boardSize;
+        row++
+    ) {
+
+        for (
+            let col = 0;
+            col < boardSize;
+            col++
+        ) {
+
+            if (
+                currentBoard[row][col] === ""
+            ) {
+
+                incomplete = true;
+
+            }
+
+            if (
+                currentBoard[row][col] !==
+                solutionBoard[row][col]
+            ) {
+
+                correct = false;
+            }
+        }
+    }
+
+    const result =
+        document.getElementById(
+            "resultMessage"
+        );
+
+    if (incomplete) {
+
+        result.innerText =
+            "⚠ Please complete all boxes.";
+
+        result.style.color =
+            "#d97706";
+
+        return;
+    }
+
+    if (correct) {
+
+        result.innerText =
+            "🎉 Correct! Level Completed!";
+
+        result.style.color =
+            "#16a34a";
+
+    } else {
+
+        result.innerText =
+            "❌ Wrong! Please try again.";
+
+        result.style.color =
+            "#dc2626";
+    }
+}
+
+
+/* =========================
+   RESET
+========================= */
+
+function resetGame() {
+
+    generateGame();
+}
+
+
+/* =========================
+   NEXT LEVEL
+========================= */
+
+function nextLevel() {
+
+    levelNumber++;
+
+    generateGame();
+
+    updateGameInfo();
+}
+
+
+/* =========================
+   BACK TO MENU
+========================= */
+
+function backToMenu() {
+
+    document
+    .getElementById("gameScreen")
+    .classList.remove("active");
+
+    document
+    .getElementById("startScreen")
+    .classList.add("active");
+}
+
+
+/* =========================
+   DARK MODE
+========================= */
+
+function toggleTheme() {
+
+    document.body.classList.toggle(
+        "dark"
+    );
+}
+
+
+/* =========================
+   SHUFFLE
+========================= */
+
+function shuffle(array) {
+
+    for (
+        let i = array.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() *
+                (i + 1)
+            );
+
+        [
+            array[i],
+            array[j]
+        ] =
+        [
+            array[j],
+            array[i]
+        ];
+    }
+}
+
+
+/* =========================
+   CHECK LOGGED-IN USER
+========================= */
+
+async function checkLoggedInUser() {
+
+    try {
+
+        const response =
+            await fetch("/user");
+
+        const data =
+            await response.json();
+
+        if (data.logged_in) {
+
+            currentUser =
+                data.username;
+
+            openGameMenu();
+        }
+
+    } catch (error) {
+
+        console.log(
+            "No active login."
+        );
     }
 }
 
 
 window.addEventListener(
     "DOMContentLoaded",
-    function () {
-
-        checkLoggedInUser();
-
-    }
+    checkLoggedInUser
 );
