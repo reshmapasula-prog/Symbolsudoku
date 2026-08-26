@@ -12,22 +12,53 @@
 
 <body>
 
-    <div class="game-card">
+<div class="app">
+
+    <div class="card">
 
         <h1>🧩 Symbol Sudoku</h1>
+        <p class="subtitle">Choose 9 symbols for your Sudoku game</p>
 
-        <p>Fill the grid without repeating symbols!</p>
+        <!-- SYMBOL SELECTION SCREEN -->
+        <div id="selectionScreen">
 
-        <div id="game"></div>
+            <h2>Choose Your Symbols</h2>
 
-        <div class="buttons">
-            <button onclick="newGame()">New Game</button>
-            <button onclick="resetGame()">Reset</button>
+            <div id="symbolOptions" class="symbol-options"></div>
+
+            <p id="selectedCount">Selected: 0 / 9</p>
+
+            <button id="startButton" onclick="startGame()" disabled>
+                Start Game
+            </button>
+
+        </div>
+
+
+        <!-- GAME SCREEN -->
+        <div id="gameScreen" style="display: none;">
+
+            <div class="game-top">
+                <div>
+                    <h2>Symbol Sudoku</h2>
+                    <p>Fill every row and column without repeating symbols!</p>
+                </div>
+            </div>
+
+            <div id="gameBoard" class="board"></div>
+
+            <div class="buttons">
+                <button onclick="newGame()">New Game</button>
+                <button onclick="backToSelection()">Change Symbols</button>
+            </div>
+
         </div>
 
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
 </html>
