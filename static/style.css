@@ -1,161 +1,292 @@
-:root {
-
-    --bg1: #eef2ff;
-    --bg2: #ddd6fe;
-
-    --card: #ffffff;
-
-    --text: #202030;
-    --muted: #64748b;
-
-    --accent: #6366f1;
-    --accent2: #9333ea;
-
-    --border: #cbd5e1;
-
-    --cell: #ffffff;
-    --selected: #e0e7ff;
-    --fixed: #ede9fe;
-
-    --success: #16a34a;
-    --danger: #dc2626;
-
-    --shadow:
-        0 20px 50px rgba(70, 60, 120, 0.18);
-}
-
-
-/* =========================
-   DARK MODE
-========================= */
-
-body.dark {
-
-    --bg1: #111827;
-    --bg2: #1e1b4b;
-
-    --card: #1f2937;
-
-    --text: #f8fafc;
-    --muted: #cbd5e1;
-
-    --border: #475569;
-
-    --cell: #273449;
-    --selected: #334155;
-    --fixed: #312e81;
-
-    --shadow:
-        0 20px 50px rgba(0, 0, 0, 0.4);
-}
-
-
-/* =========================
-   GLOBAL
-========================= */
+/* =========================================
+   SYMBOL SUDOKU - COMPLETE STYLE.CSS
+========================================= */
 
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
+:root {
+    --bg: #f5f7ff;
+    --card: #ffffff;
+    --card-soft: #f8f9ff;
+    --text: #202638;
+    --muted: #70778a;
+    --border: #dce1f0;
+
+    --accent: #6d4cff;
+    --accent2: #9b5cff;
+
+    --selected: #eeeaff;
+    --cell: #ffffff;
+    --given: #e8e3ff;
+
+    --shadow: 0 18px 55px rgba(67, 54, 120, 0.16);
+    --success: #16a34a;
+    --error: #dc2626;
+}
+
+body.dark {
+    --bg: #101322;
+    --card: #1a1f33;
+    --card-soft: #222840;
+    --text: #f5f7ff;
+    --muted: #aeb6ce;
+    --border: #3a435f;
+
+    --selected: #2a3150;
+    --cell: #222940;
+    --given: #352d66;
+
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+
+/* =========================================
+   BODY
+========================================= */
 
 body {
-
-    margin: 0;
-
     min-height: 100vh;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(109, 76, 255, 0.16),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at bottom right,
+            rgba(155, 92, 255, 0.15),
+            transparent 35%
+        ),
+        var(--bg);
 
     color: var(--text);
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--bg1),
-            var(--bg2)
-        );
-
     transition:
-        background 0.3s,
-        color 0.3s;
+        background 0.3s ease,
+        color 0.3s ease;
+
+    overflow-x: hidden;
 }
 
 
-button {
-
-    font-family: inherit;
-}
-
-
-/* =========================
-   SCREENS
-========================= */
+/* =========================================
+   SCREEN SYSTEM
+========================================= */
 
 .screen {
-
     display: none;
-
     min-height: 100vh;
-
+    width: 100%;
     padding: 30px 20px;
+}
 
+.screen.active {
+    display: flex;
     align-items: center;
-
     justify-content: center;
 }
 
 
-.screen.active {
+/* =========================================
+   HIDDEN
+========================================= */
 
-    display: flex;
+.hidden {
+    display: none !important;
 }
 
 
-/* =========================
-   LOGIN / SIGNUP
-========================= */
+/* =========================================
+   LOGIN SCREEN
+========================================= */
 
-.auth-container {
+#loginScreen {
+    padding: 25px;
+}
 
+
+/* Main authentication container */
+
+.auth-wrapper {
     width: min(900px, 96vw);
+    min-height: 470px;
 
     display: grid;
+    grid-template-columns: 1fr 1fr;
 
-    grid-template-columns:
-        1fr
-        1fr;
-
+    background: var(--card);
+    border: 1px solid var(--border);
     border-radius: 28px;
 
     overflow: hidden;
-
-    background: var(--card);
 
     box-shadow: var(--shadow);
 }
 
 
-.auth-panel {
+/* =========================================
+   LEFT - SIGN IN
+========================================= */
 
-    padding:
-        50px
-        40px;
+.login-side {
+    padding: 45px 42px;
 
-    text-align: center;
-}
-
-
-.signin-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     background: var(--card);
 }
 
 
-.signup-panel {
+.login-logo {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+
+.login-side h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+
+.login-subtitle {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+
+.login-side h2 {
+    font-size: 23px;
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   RIGHT - CREATE ACCOUNT
+========================================= */
+
+.signup-side {
+    padding: 45px 42px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #4f32cc,
+            #7b45e8,
+            #a354ec
+        );
+
+    color: white;
+}
+
+
+.signup-icon {
+    font-size: 38px;
+    margin-bottom: 15px;
+}
+
+
+.signup-side h2 {
+    font-size: 30px;
+    margin-bottom: 12px;
+}
+
+
+.signup-side p {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 15px;
+    margin-bottom: 26px;
+}
+
+
+/* =========================================
+   FORMS
+========================================= */
+
+#loginForm,
+#signupForm {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+
+#loginForm input,
+#signupForm input {
+    width: 100%;
+    height: 52px;
+
+    border-radius: 12px;
+    border: 1px solid var(--border);
+
+    padding: 0 16px;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+#loginForm input {
+    background: var(--cell);
+    color: var(--text);
+}
+
+
+#signupForm input {
+    background: rgba(255, 255, 255, 0.96);
+    color: #222;
+    border: none;
+}
+
+
+#loginForm input:focus,
+#signupForm input:focus {
+    border-color: var(--accent);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(109, 76, 255, 0.13);
+}
+
+
+#signupForm input:focus {
+    box-shadow:
+        0 0 0 4px
+        rgba(255, 255, 255, 0.25);
+}
+
+
+.auth-button {
+    width: 100%;
+    height: 52px;
+
+    border: none;
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    color: white;
 
     background:
         linear-gradient(
@@ -164,734 +295,588 @@ button {
             var(--accent2)
         );
 
-    color: white;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 
-.logo {
+.auth-button:hover {
+    transform: translateY(-2px);
 
-    font-size: 42px;
-
-    margin-bottom: 10px;
+    box-shadow:
+        0 10px 25px
+        rgba(109, 76, 255, 0.3);
 }
 
 
-.auth-header h1 {
-
-    margin: 0;
-
-    font-size: 32px;
+.signup-side .auth-button {
+    background: white;
+    color: #6338d7;
 }
 
 
-.auth-header p {
+#authMessage {
+    min-height: 22px;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 14px;
+}
 
-    margin:
-        12px
-        0
-        30px;
 
+/* =========================================
+   THEME BUTTON
+========================================= */
+
+.theme-button {
+    margin-top: 18px;
+
+    align-self: flex-start;
+
+    border: 1px solid var(--border);
+
+    background: var(--card-soft);
+    color: var(--text);
+
+    padding: 10px 15px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   START SCREEN
+========================================= */
+
+.start-card {
+    width: min(750px, 96vw);
+
+    background: var(--card);
+
+    padding: 42px;
+
+    border-radius: 28px;
+
+    box-shadow: var(--shadow);
+
+    text-align: center;
+
+    border: 1px solid var(--border);
+}
+
+
+.start-card h1 {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+
+.start-card p {
     color: var(--muted);
-
-    line-height: 1.5;
+    margin-bottom: 28px;
 }
 
 
-.signup-panel .auth-header p {
+.user-bar {
+    width: 100%;
 
-    color:
-        rgba(
-            255,
-            255,
-            255,
-            0.8
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    background: var(--selected);
+
+    padding: 12px 16px;
+
+    border-radius: 14px;
+
+    margin-bottom: 30px;
+
+    font-size: 15px;
+}
+
+
+.user-bar button {
+    border: none;
+
+    background: #ef4444;
+    color: white;
+
+    padding: 9px 15px;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+}
+
+
+/* =========================================
+   ENTER GAME BUTTON
+========================================= */
+
+.enter-game-btn {
+    width: min(320px, 100%);
+
+    border: none;
+    border-radius: 14px;
+
+    padding: 16px 25px;
+
+    cursor: pointer;
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            var(--accent2)
+        );
+
+    box-shadow:
+        0 12px 28px
+        rgba(109, 76, 255, 0.28);
+
+    transition: transform 0.2s ease;
+}
+
+
+.enter-game-btn:hover {
+    transform: translateY(-3px);
+}
+
+
+/* =========================================
+   GAME SIZE BUTTONS
+========================================= */
+
+.size-options {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(100px, 1fr));
+
+    gap: 15px;
+
+    margin-top: 25px;
+}
+
+
+.size-option {
+    min-height: 75px;
+
+    border: 2px solid var(--border);
+
+    background: var(--card-soft);
+
+    color: var(--text);
+
+    border-radius: 16px;
+
+    cursor: pointer;
+
+    font-size: 19px;
+    font-weight: bold;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.size-option:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+}
+
+
+.size-option.selected {
+    color: white;
+
+    border-color: transparent;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            var(--accent2)
         );
 }
 
 
-.auth-panel h2 {
+/* =========================================
+   DIFFICULTY
+========================================= */
 
-    margin-bottom: 25px;
-}
-
-
-.auth-panel form {
-
+.difficulty-options {
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 
-    flex-direction: column;
+    gap: 12px;
 
-    gap: 16px;
+    margin-top: 25px;
 }
 
 
-.auth-panel input {
+.difficulty-btn {
+    min-width: 120px;
 
-    width: 100%;
-
-    padding: 15px;
+    padding: 13px 18px;
 
     border-radius: 12px;
 
-    border:
-        1px
-        solid
-        var(--border);
+    border: 2px solid var(--border);
+
+    background: var(--card-soft);
+    color: var(--text);
+
+    cursor: pointer;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    transition: 0.2s ease;
+}
+
+
+.difficulty-btn:hover {
+    border-color: var(--accent);
+}
+
+
+.difficulty-btn.selected {
+    color: white;
+
+    border-color: var(--accent);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            var(--accent2)
+        );
+}
+
+
+/* =========================================
+   GAME SCREEN
+========================================= */
+
+#gameScreen {
+    align-items: flex-start;
+    padding-top: 25px;
+}
+
+
+.game-container {
+    width: min(950px, 96vw);
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    background: var(--card);
+
+    border: 1px solid var(--border);
+
+    border-radius: 28px;
+
+    padding: 25px;
+
+    box-shadow: var(--shadow);
+}
+
+
+/* =========================================
+   GAME HEADER
+========================================= */
+
+.game-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+
+.game-title {
+    text-align: left;
+}
+
+
+.game-title h1 {
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+
+
+.game-title p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+
+/* =========================================
+   GAME INFO
+========================================= */
+
+.game-info {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-bottom: 18px;
+}
+
+
+.info-badge {
+    padding: 9px 15px;
+
+    background: var(--selected);
+
+    border-radius: 20px;
+
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+/* =========================================
+   SUDOKU BOARD WRAPPER
+   IMPORTANT:
+   Keeps the board completely visible
+========================================= */
+
+.board-wrapper {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+
+    overflow: auto;
+
+    padding: 8px;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   SUDOKU GRID
+========================================= */
+
+#sudokuBoard {
+    display: grid;
+
+    width: min(640px, 86vw);
+    aspect-ratio: 1 / 1;
+
+    margin: 0 auto;
+
+    border: 3px solid var(--text);
+
+    background: var(--border);
+
+    overflow: hidden;
+}
+
+
+/* =========================================
+   INDIVIDUAL CELL
+========================================= */
+
+.sudoku-cell {
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
 
     background: var(--cell);
 
     color: var(--text);
 
-    font-size: 16px;
-
-    outline: none;
-}
-
-
-.auth-panel input:focus {
-
-    border-color:
-        var(--accent);
-}
-
-
-.signup-panel input {
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.95
-        );
-
-    color: #222;
-
-    border: none;
-}
-
-
-.auth-button {
-
-    padding: 15px;
-
-    border: none;
-
-    border-radius: 12px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 
     cursor: pointer;
 
-    font-size: 17px;
+    font-size: clamp(18px, 3vw, 34px);
 
-    font-weight: bold;
-
-    color: white;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--accent),
-            var(--accent2)
-        );
-
-    transition:
-        transform 0.2s;
-}
-
-
-.auth-button:hover {
-
-    transform:
-        translateY(-2px);
-}
-
-
-.signup-button {
-
-    background: white;
-
-    color:
-        var(--accent);
-}
-
-
-#authMessage {
-
-    position: fixed;
-
-    bottom: 25px;
-
-    left: 50%;
-
-    transform:
-        translateX(-50%);
-
-    font-weight: bold;
-
-    text-align: center;
-}
-
-
-/* =========================
-   MENU
-========================= */
-
-.game-menu {
-
-    position: relative;
-
-    width:
-        min(
-            850px,
-            95vw
-        );
-
-    background:
-        var(--card);
-
-    border-radius: 28px;
-
-    box-shadow:
-        var(--shadow);
-
-    padding:
-        25px
-        40px
-        45px;
-
-    text-align: center;
-}
-
-
-.user-bar {
-
-    display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items: center;
-
-    background:
-        var(--selected);
-
-    padding:
-        10px
-        15px;
-
-    border-radius: 12px;
-
-    margin-bottom: 20px;
-}
-
-
-.user-bar button {
-
-    border: none;
-
-    background: #ef4444;
-
-    color: white;
-
-    padding:
-        8px
-        14px;
-
-    border-radius: 8px;
-
-    cursor: pointer;
-
-    font-weight: bold;
-}
-
-
-.theme-button {
-
-    border: none;
-
-    border-radius: 10px;
-
-    padding:
-        9px
-        14px;
-
-    background:
-        var(--selected);
-
-    color:
-        var(--text);
-
-    cursor: pointer;
-
-    margin-bottom: 20px;
-}
-
-
-.menu-content h1 {
-
-    font-size: 38px;
-
-    margin:
-        10px
-        0;
-}
-
-
-.menu-content p {
-
-    color:
-        var(--muted);
-}
-
-
-.menu-content h2 {
-
-    margin-top: 30px;
-}
-
-
-.size-options,
-.difficulty-options {
-
-    display: flex;
-
-    justify-content: center;
-
-    flex-wrap: wrap;
-
-    gap: 12px;
-}
-
-
-.size-options button,
-.difficulty-options button {
-
-    min-width: 105px;
-
-    padding:
-        15px
-        20px;
-
-    border: none;
-
-    border-radius: 12px;
-
-    cursor: pointer;
-
-    background:
-        var(--selected);
-
-    color:
-        var(--text);
-
-    font-size: 16px;
-
-    font-weight: bold;
-}
-
-
-.size-options button:hover,
-.difficulty-options button:hover {
-
-    background:
-        var(--accent);
-
-    color: white;
-}
-
-
-.difficulty.selected {
-
-    background:
-        var(--accent);
-
-    color: white;
-}
-
-
-#selectedPattern {
-
-    margin-top: 25px;
-
-    padding: 14px;
-
-    border-radius: 12px;
-
-    background:
-        var(--selected);
-
-    font-weight: bold;
-}
-
-
-.start-button {
-
-    margin-top: 25px;
-
-    padding:
-        16px
-        40px;
-
-    border: none;
-
-    border-radius: 14px;
-
-    cursor: pointer;
-
-    color: white;
-
-    font-size: 18px;
-
-    font-weight: bold;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--accent),
-            var(--accent2)
-        );
-}
-
-
-/* =========================
-   GAME SCREEN
-========================= */
-
-.game-container {
-
-    width:
-        min(
-            850px,
-            96vw
-        );
-
-    background:
-        var(--card);
-
-    padding:
-        25px
-        30px;
-
-    border-radius: 25px;
-
-    box-shadow:
-        var(--shadow);
-
-    text-align: center;
-}
-
-
-.game-container h1 {
-
-    margin:
-        10px
-        0;
-}
-
-
-.game-container p {
-
-    color:
-        var(--muted);
-}
-
-
-.game-topbar {
-
-    display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items: center;
-}
-
-
-.game-topbar button {
-
-    border: none;
-
-    padding:
-        10px
-        15px;
-
-    border-radius: 10px;
-
-    cursor: pointer;
-
-    background:
-        var(--selected);
-
-    color:
-        var(--text);
-}
-
-
-/* =========================
-   SUDOKU BOARD
-========================= */
-
-.sudoku-board {
-
-    width:
-        min(
-            600px,
-            90vw
-        );
-
-    aspect-ratio: 1;
-
-    margin:
-        20px
-        auto;
-
-    display: grid;
-
-    gap: 2px;
-
-    border:
-        3px
-        solid
-        var(--text);
-
-    background:
-        var(--border);
-}
-
-
-.cell {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background:
-        var(--cell);
-
-    color:
-        var(--text);
-
-    font-size:
-        clamp(
-            18px,
-            4vw,
-            30px
-        );
-
-    font-weight: bold;
-
-    cursor: pointer;
+    font-weight: 700;
 
     user-select: none;
 
     transition:
-        background 0.15s,
-        transform 0.15s;
+        background 0.15s ease,
+        transform 0.15s ease;
 }
 
 
-.cell:hover {
-
-    background:
-        var(--selected);
+.sudoku-cell:hover {
+    background: var(--selected);
 }
 
 
-.cell.selected {
-
-    outline:
-        3px
-        solid
-        var(--accent);
-
-    z-index: 2;
+.sudoku-cell.selected-cell {
+    background: rgba(109, 76, 255, 0.2);
 }
 
 
-.cell.fixed {
+.sudoku-cell.given {
+    background: var(--given);
 
-    background:
-        var(--fixed);
+    font-weight: bold;
 
     cursor: default;
 }
 
 
-.cell.wrong {
-
-    background:
-        #fecaca;
+.sudoku-cell.correct {
+    color: var(--success);
 }
 
 
-body.dark .cell.wrong {
-
-    background:
-        #7f1d1d;
+.sudoku-cell.wrong {
+    background: #fee2e2;
+    color: var(--error);
 }
 
 
-/* =========================
-   SYMBOL OPTIONS
-========================= */
+body.dark .sudoku-cell.wrong {
+    background: #542b35;
+}
 
-.symbol-title {
 
-    margin-top: 15px;
+/* =========================================
+   3x3 / 4x4 / 5x5 / 6x6 GRID
+   JavaScript can add these classes
+========================================= */
 
-    margin-bottom: 12px;
+.board-3 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
 
-    font-size: 18px;
 
-    font-weight: bold;
+.board-4 {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+}
+
+
+.board-5 {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+}
+
+
+.board-6 {
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+}
+
+
+/* =========================================
+   SYMBOL SECTION
+   ALWAYS BELOW THE BOX
+========================================= */
+
+.symbol-section {
+    width: 100%;
+
+    text-align: center;
+
+    margin-top: 5px;
+}
+
+
+.symbol-section h3 {
+    margin-bottom: 14px;
+
+    font-size: 19px;
 }
 
 
 .symbol-options {
+    width: min(650px, 100%);
+
+    margin: 0 auto;
 
     display: flex;
-
     justify-content: center;
-
     flex-wrap: wrap;
 
     gap: 10px;
-
-    max-width: 700px;
-
-    margin:
-        auto
-        auto
-        20px;
 }
 
 
-.symbol-option {
+/* =========================================
+   SYMBOL BUTTONS
+========================================= */
 
-    width: 52px;
-
-    height: 52px;
+.symbol-btn {
+    width: 62px;
+    height: 62px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
-    border:
-        2px
-        solid
-        var(--border);
+    border: 2px solid var(--border);
 
-    border-radius: 12px;
+    background: var(--card-soft);
 
-    background:
-        var(--cell);
+    color: var(--text);
 
-    color:
-        var(--text);
-
-    font-size: 25px;
-
-    cursor: pointer;
-}
-
-
-.symbol-option:hover,
-.symbol-option.selected-symbol {
-
-    border-color:
-        var(--accent);
-
-    background:
-        var(--selected);
-}
-
-
-/* =========================
-   RESULT
-========================= */
-
-.result-message {
-
-    min-height: 30px;
-
-    font-size: 18px;
-
-    font-weight: bold;
-
-    margin:
-        10px
-        0;
-}
-
-
-.correct {
-
-    color:
-        var(--success);
-}
-
-
-.incorrect {
-
-    color:
-        var(--danger);
-}
-
-
-/* =========================
-   GAME BUTTONS
-========================= */
-
-.game-buttons {
-
-    display: flex;
-
-    justify-content: center;
-
-    flex-wrap: wrap;
-
-    gap: 12px;
-
-    margin-top: 15px;
-}
-
-
-.game-buttons button {
-
-    padding:
-        12px
-        18px;
-
-    border: none;
-
-    border-radius: 10px;
+    border-radius: 14px;
 
     cursor: pointer;
 
+    font-size: 27px;
+
     font-weight: bold;
 
-    background:
-        var(--selected);
-
-    color:
-        var(--text);
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
 }
 
 
-.game-buttons button:hover {
+.symbol-btn:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+}
 
-    background:
-        var(--accent);
 
+.symbol-btn.selected-symbol {
     color: white;
-}
 
-
-.game-buttons .next-level {
+    border-color: transparent;
 
     background:
         linear-gradient(
@@ -899,82 +884,269 @@ body.dark .cell.wrong {
             var(--accent),
             var(--accent2)
         );
+}
 
+
+/* =========================================
+   RESULT MESSAGE
+========================================= */
+
+#resultMessage {
+    min-height: 28px;
+
+    margin-top: 18px;
+
+    text-align: center;
+
+    font-size: 17px;
+    font-weight: bold;
+}
+
+
+.result-correct {
+    color: var(--success);
+}
+
+
+.result-wrong {
+    color: var(--error);
+}
+
+
+/* =========================================
+   GAME ACTION BUTTONS
+========================================= */
+
+.game-actions {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-top: 20px;
+}
+
+
+.game-actions button {
+    min-width: 130px;
+
+    padding: 13px 18px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    transition: transform 0.2s ease;
+}
+
+
+.game-actions button:hover {
+    transform: translateY(-2px);
+}
+
+
+.primary-btn {
     color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            var(--accent2)
+        );
 }
 
 
-.hidden {
+.secondary-btn {
+    color: var(--text);
 
-    display: none !important;
+    background: var(--selected);
+
+    border: 1px solid var(--border) !important;
 }
 
 
-/* =========================
-   MOBILE
-========================= */
+/* =========================================
+   NEXT LEVEL BUTTON
+========================================= */
 
-@media (max-width: 700px) {
-
-    .screen {
-
-        padding:
-            20px
-            10px;
-    }
+#nextLevelBtn {
+    display: none;
+}
 
 
-    .auth-container {
+#nextLevelBtn.show {
+    display: inline-block;
+}
+
+
+/* =========================================
+   SCROLLBAR
+========================================= */
+
+::-webkit-scrollbar {
+    width: 9px;
+}
+
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+::-webkit-scrollbar-thumb {
+    background: #9b8ee8;
+    border-radius: 10px;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 850px) {
+
+    .auth-wrapper {
+        width: min(620px, 96vw);
 
         grid-template-columns: 1fr;
     }
 
-
-    .auth-panel {
-
-        padding:
-            35px
-            25px;
+    .login-side,
+    .signup-side {
+        padding: 35px 30px;
     }
 
-
-    .game-menu {
-
-        padding:
-            20px;
+    .signup-side {
+        min-height: 390px;
     }
 
+    .size-options {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
 
-    .menu-content h1 {
+    .game-header {
+        flex-direction: column;
+        text-align: center;
+    }
 
+    .game-title {
+        text-align: center;
+    }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .screen {
+        padding: 15px 10px;
+    }
+
+    #loginScreen {
+        padding: 15px;
+    }
+
+    .auth-wrapper {
+        border-radius: 22px;
+    }
+
+    .login-side,
+    .signup-side {
+        padding: 32px 22px;
+    }
+
+    .login-side h1 {
+        font-size: 28px;
+    }
+
+    .signup-side h2 {
+        font-size: 27px;
+    }
+
+    .start-card {
+        padding: 28px 18px;
+    }
+
+    .start-card h1 {
         font-size: 30px;
     }
 
+    .user-bar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
 
     .game-container {
+        width: 100%;
 
-        padding:
-            20px
-            10px;
+        padding: 16px 10px;
+
+        border-radius: 20px;
     }
 
-
-    .sudoku-board {
-
-        width:
-            min(
-                96vw,
-                520px
-            );
+    .game-title h1 {
+        font-size: 25px;
     }
 
+    #sudokuBoard {
+        width: min(94vw, 520px);
+    }
 
-    .symbol-option {
+    .symbol-btn {
+        width: 52px;
+        height: 52px;
 
-        width: 45px;
+        font-size: 23px;
+    }
 
-        height: 45px;
+    .game-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
 
-        font-size: 21px;
+    .game-actions button {
+        width: 100%;
+    }
+
+    .difficulty-btn {
+        flex: 1;
+        min-width: 90px;
+    }
+}
+
+
+/* =========================================
+   VERY SMALL MOBILE
+========================================= */
+
+@media (max-width: 380px) {
+
+    .login-side,
+    .signup-side {
+        padding: 25px 16px;
+    }
+
+    .symbol-options {
+        gap: 7px;
+    }
+
+    .symbol-btn {
+        width: 46px;
+        height: 46px;
+
+        font-size: 20px;
     }
 }
