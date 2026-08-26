@@ -11,6 +11,82 @@
 
 <div class="app">
 
+    <!-- LOGIN SCREEN -->
+<div id="loginScreen" class="screen active">
+
+    <div class="login-card">
+
+        <h1>✨ Symbol Sudoku</h1>
+
+        <p class="login-subtitle">
+            Sign in and continue your Sudoku journey
+        </p>
+
+        <div class="auth-tabs">
+            <button id="loginTab"
+                    class="auth-tab active-tab"
+                    onclick="showLogin()">
+                Sign In
+            </button>
+
+            <button id="signupTab"
+                    class="auth-tab"
+                    onclick="showSignup()">
+                Create Account
+            </button>
+        </div>
+
+        <div id="authMessage"></div>
+
+        <div id="loginForm">
+
+            <input
+                type="text"
+                id="loginUsername"
+                placeholder="Enter Username"
+            >
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Enter Password"
+            >
+
+            <button class="auth-button" onclick="loginUser()">
+                Sign In →
+            </button>
+
+        </div>
+
+
+        <div id="signupForm" class="hidden">
+
+            <input
+                type="text"
+                id="signupUsername"
+                placeholder="Choose Username"
+            >
+
+            <input
+                type="password"
+                id="signupPassword"
+                placeholder="Create Password"
+            >
+
+            <button class="auth-button" onclick="signupUser()">
+                Create Account →
+            </button>
+
+        </div>
+
+        <button class="theme-btn" onclick="toggleTheme()">
+            🌙 / ☀ Theme
+        </button>
+
+    </div>
+
+</div>
+
     <!-- START SCREEN -->
     <div id="startScreen" class="screen active">
         <div class="welcome-card">
