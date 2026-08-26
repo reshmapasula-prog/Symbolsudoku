@@ -1,113 +1,216 @@
-const symbols = [
-    "★", "♥", "♦",
-    "♣", "●", "▲",
-    "■", "◆", "✿"
+const availableSymbols = [
+    "★", "♥", "♣", "♦",
+    "●", "▲", "■", "✿",
+    "♠", "☀", "☾", "⚡"
 ];
 
-let gameData = [];
+let selectedSymbols = [];
+let activeCell = null;
 
-/* Create a valid symbol Sudoku pattern */
 
-function createBoard() {
+window.onload = function () {
+    showSymbolOptions();
+};
 
-    const board = [];
+
+function showSymbolOptions() {
+
+    const options = document.getElementById("symbolOptions");
+
+    options.innerHTML = "";
+
+    availableSymbols.forEach(symbol => {
+
+        const button = document.createElement("button");
+
+        button.className = "symbol-option";
+        button.textContent = symbol;
+
+        if (selectedSymbols.includes(symbol)) {
+            button.classList.add("selected");
+        }
+
+        button.onclick = function () {
+            selectSymbol(symbol, button);
+        };
+
+        options.appendChild(button);
+    });
+}
+
+
+function selectSymbol(symbol, button) {
+
+    if (selectedSymbols.includes(symbol)) {
+
+        selectedSymbols =
+            selectedSymbols.filter(item => item !== symbol);
+
+        button.classList.remove("selected");
+
+    } else {
+
+        if (selectedSymbols.length >= 9) {
+            alert("You can select only 9 symbols.");
+            return;
+        }
+
+        selectedSymbols.push(symbol);
+
+        button.classList.add("selected");
+    }
+
+    document.getElementById("selectedCount").textContent =
+        "Selected: " + selectedSymbols.length + " / 9";
+
+    document.getElementById("startButton").disabled =
+        selectedSymbols.length !== 9;
+}
+
+
+function startGame() {
+
+    if (selectedSymbols.length !== 9) {
+        alert("Please select exactly 9 symbols.");
+        return;
+    }
+
+    document.getElementById("selectionScreen").style.display = "none";
+
+    document.getElementById("gameScreen").style.display = "block";
+
+    newGame();
+}
+
+
+function newGame() {
+
+    const board = document.getElementById("gameBoard");
+
+    board.innerHTML = "";
+
+    activeCell = null;
+
+    // VALID SUDOKU PATTERN
+    const solution = [];
 
     for (let row = 0; row < 9; row++) {
 
-        board[row] = [];
+        const rowData = [];
 
         for (let col = 0; col < 9; col++) {
 
             const symbolIndex =
                 (row * 3 +
-                Math.floor(row / 3) +
-                col) % 9;
+                 Math.floor(row / 3) +
+                 col) % 9;
 
-            board[row][col] =
-                symbols[symbolIndex];
+            rowData.push(selectedSymbols[symbolIndex]);
         }
+
+        solution.push(rowData);
     }
 
-    return board;
-}
-
-/* Shuffle rows */
-
-function shuffleBoard(board) {
-
-    for (let group = 0; group < 3; group++) {
-
-        const start = group * 3;
-
-        for (let i = 0; i < 3; i++) {
-
-            const random =
-                start +
-                Math.floor(Math.random() * 3);
-
-            const temp = board[start + i];
-
-            board[start + i] = board[random];
-
-            board[random] = temp;
-        }
-    }
-
-    return board;
-}
-
-/* Start new game */
-
-function newGame() {
-
-    const game =
-        document.getElementById("game");
-
-    game.innerHTML = "";
-
-    gameData =
-        shuffleBoard(createBoard());
 
     for (let row = 0; row < 9; row++) {
 
         for (let col = 0; col < 9; col++) {
 
-            const cell =
-                document.createElement("div");
+            const cell = document.createElement("button");
 
             cell.className = "cell";
 
-            /* Show around 45 starting symbols */
+            const isGiven = Math.random() > 0.55;
 
-            const showSymbol =
-                Math.random() > 0.45;
+            if (isGiven) {
 
-            if (showSymbol) {
+                cell.textContent = solution[row][col];
 
-                cell.textContent =
-                    gameData[row][col];
+                cell.classList.add("given");
 
             } else {
 
-                cell.textContent = "";
+                cell.dataset.answer = solution[row][col];
+
+                cell.onclick = function () {
+                    selectCell(cell);
+                };
             }
 
-            game.appendChild(cell);
+            board.appendChild(cell);
         }
     }
 }
 
-/* Reset */
 
-function resetGame() {
-    newGame();
+function selectCell(cell) {
+
+    document.querySelectorAll(".cell").forEach(item => {
+        item.classList.remove("selected-cell");
+    });
+
+    activeCell = cell;
+
+    cell.classList.add("selected-cell");
+
+    showSymbolPicker();
 }
 
-/* Automatically start */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-        newGame();
+function showSymbolPicker() {
+
+    let oldPicker = document.getElementById("symbolPicker");
+
+    if (oldPicker) {
+        oldPicker.remove();
     }
-);
+
+    const picker = document.createElement("div");
+
+    picker.id = "symbolPicker";
+
+    picker.style.margin = "20px auto";
+    picker.style.display = "grid";
+    picker.style.gridTemplateColumns = "repeat(9, 1fr)";
+    picker.style.gap = "8px";
+    picker.style.maxWidth = "630px";
+
+
+    selectedSymbols.forEach(symbol => {
+
+        const button = document.createElement("button");
+
+        button.textContent = symbol;
+
+        button.style.padding = "10px";
+        button.style.fontSize = "22px";
+
+        button.onclick = function () {
+
+            if (!activeCell) return;
+
+            activeCell.textContent = symbol;
+
+            activeCell.classList.remove("selected-cell");
+
+            activeCell = null;
+
+            picker.remove();
+        };
+
+        picker.appendChild(button);
+    });
+
+
+    document.getElementById("gameScreen").appendChild(picker);
+}
+
+
+function backToSelection() {
+
+    document.getElementById("gameScreen").style.display = "none";
+
+    document.getElementById("selectionScreen").style.display = "block";
+
+    showSymbolOptions();
+}
