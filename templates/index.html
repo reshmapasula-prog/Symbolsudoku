@@ -1,92 +1,343 @@
-<div id="loginScreen" class="screen active">
+<!DOCTYPE html>
+<html lang="en">
 
-    <div class="auth-wrapper">
+<head>
 
-        <!-- SIGN IN SIDE -->
+    <meta charset="UTF-8">
 
-        <div class="login-side">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-            <div class="login-logo">✦</div>
+    <title>Symbol Sudoku</title>
 
-            <h1>Symbol Sudoku</h1>
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 
-            <p class="login-subtitle">
-                Welcome back! Continue your Sudoku journey!
-            </p>
+</head>
 
-            <h2>Sign In</h2>
 
-            <div id="loginForm">
+<body>
+
+
+<!-- LOGIN SCREEN -->
+
+<section
+    id="loginScreen"
+    class="screen active"
+>
+
+    <div class="auth-page">
+
+        <div class="auth-card">
+
+
+            <!-- SIGN IN -->
+
+            <div class="auth-side login-side">
+
+                <h1>✨ Symbol Sudoku</h1>
+
+                <p class="subtitle">
+                    Welcome back! Continue your Sudoku journey.
+                </p>
+
+                <h2>Sign In</h2>
 
                 <input
-                    type="text"
                     id="loginUsername"
+                    type="text"
                     placeholder="Enter Username"
                 >
 
                 <input
-                    type="password"
                     id="loginPassword"
+                    type="password"
                     placeholder="Enter Password"
                 >
 
                 <button
-                    type="button"
-                    class="auth-button"
+                    class="primary-btn"
                     onclick="loginUser()"
                 >
                     Sign In →
                 </button>
 
+                <p
+                    id="loginMessage"
+                    class="message"
+                ></p>
+
             </div>
 
-        </div>
 
+            <!-- SIGN UP -->
 
-        <!-- CREATE ACCOUNT SIDE -->
+            <div class="auth-side signup-side">
 
-        <div class="signup-side">
+                <h2>👤 New Here?</h2>
 
-            <div class="signup-icon">♟</div>
+                <p class="subtitle">
+                    Create an account and start playing!
+                </p>
 
-            <h2>New Here?</h2>
-
-            <p>
-                Create an account and start playing!
-            </p>
-
-            <h2 class="create-title">
-                Create Account
-            </h2>
-
-            <div id="signupForm">
+                <h2>Create Account</h2>
 
                 <input
-                    type="text"
                     id="signupUsername"
+                    type="text"
                     placeholder="Choose Username"
                 >
 
                 <input
-                    type="password"
                     id="signupPassword"
+                    type="password"
                     placeholder="Create Password"
                 >
 
                 <button
-                    type="button"
-                    class="auth-button"
+                    class="primary-btn"
                     onclick="signupUser()"
                 >
                     Create Account →
                 </button>
 
+                <p
+                    id="signupMessage"
+                    class="message"
+                ></p>
+
             </div>
 
-            <div id="authMessage"></div>
 
         </div>
 
     </div>
 
-</div>
+</section>
+
+
+
+<!-- START SCREEN -->
+
+<section
+    id="startScreen"
+    class="screen"
+>
+
+    <div class="game-container">
+
+
+        <div class="user-bar">
+
+            <span>
+                👤 Welcome,
+                <b id="usernameDisplay"></b>
+            </span>
+
+            <button
+                class="logout-btn"
+                onclick="logoutUser()"
+            >
+                Logout
+            </button>
+
+        </div>
+
+
+        <div class="title-box">
+
+            <h1>✨ Symbol Sudoku</h1>
+
+            <p>
+                Choose your Sudoku box size and difficulty.
+            </p>
+
+        </div>
+
+
+        <h2 class="option-title">
+            Choose Box Size
+        </h2>
+
+
+        <div class="option-grid">
+
+            <button
+                class="option-btn size-btn selected-option"
+                onclick="selectSize(3, this)"
+            >
+                3 × 3
+            </button>
+
+            <button
+                class="option-btn size-btn"
+                onclick="selectSize(4, this)"
+            >
+                4 × 4
+            </button>
+
+            <button
+                class="option-btn size-btn"
+                onclick="selectSize(5, this)"
+            >
+                5 × 5
+            </button>
+
+            <button
+                class="option-btn size-btn"
+                onclick="selectSize(6, this)"
+            >
+                6 × 6
+            </button>
+
+        </div>
+
+
+        <h2 class="option-title">
+            Choose Difficulty
+        </h2>
+
+
+        <div class="level-grid">
+
+            <button
+                class="option-btn level-btn selected-option"
+                onclick="selectLevel('Easy', this)"
+            >
+                Easy
+            </button>
+
+            <button
+                class="option-btn level-btn"
+                onclick="selectLevel('Medium', this)"
+            >
+                Medium
+            </button>
+
+            <button
+                class="option-btn level-btn"
+                onclick="selectLevel('Hard', this)"
+            >
+                Hard
+            </button>
+
+        </div>
+
+
+        <button
+            class="start-btn"
+            onclick="startGame()"
+        >
+            Enter Game →
+        </button>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- GAME SCREEN -->
+
+<section
+    id="gameScreen"
+    class="screen"
+>
+
+
+    <div class="game-header">
+
+        <button
+            class="game-btn"
+            onclick="backToMenu()"
+        >
+            ← Menu
+        </button>
+
+
+        <button
+            class="theme-btn"
+            onclick="toggleTheme()"
+        >
+            ☀️ / 🌙
+        </button>
+
+    </div>
+
+
+    <div class="game-info">
+
+        <h1>✨ Symbol Sudoku</h1>
+
+        <p id="gameDetails"></p>
+
+    </div>
+
+
+    <div
+        id="sudokuBoard"
+        class="sudoku-board"
+    ></div>
+
+
+    <div class="symbol-area">
+
+        <h2>Choose a Symbol</h2>
+
+        <div
+            id="symbolOptions"
+            class="symbol-options"
+        ></div>
+
+    </div>
+
+
+    <div
+        id="resultMessage"
+    ></div>
+
+
+    <div class="game-buttons">
+
+        <button
+            class="game-btn"
+            onclick="checkGame()"
+        >
+            Check Answer
+        </button>
+
+
+        <button
+            class="game-btn"
+            onclick="resetGame()"
+        >
+            Reset
+        </button>
+
+
+        <button
+            class="game-btn"
+            onclick="nextLevel()"
+        >
+            Next Level →
+        </button>
+
+    </div>
+
+
+</section>
+
+
+<script
+    src="{{ url_for('static', filename='script.js') }}"
+></script>
+
+
+</body>
+
+</html>
