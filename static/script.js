@@ -1,11 +1,11 @@
 function newGame() {
-    const symbols = ["★", "♥", "◆", "●"];
+    const symbols = ["★", "♥", "♦", "♣", "●"];
 
-    const gameArea = document.getElementById("game-area");
+    const gameArea = document.getElementById("game");
 
     gameArea.innerHTML = "";
 
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 81; i++) {
         const cell = document.createElement("button");
 
         cell.className = "cell";
