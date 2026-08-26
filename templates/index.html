@@ -2,17 +2,27 @@
 <html>
 <head>
     <title>Symbol Sudoku</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
+
+<div class="container">
+
     <h1>🧩 Symbol Sudoku</h1>
 
-    <div id="game">
-        <p>Welcome to Symbol Sudoku!</p>
-        <button onclick="newGame()">New Game</button>
-    </div>
+    <p>Fill the grid without repeating symbols!</p>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <div id="game"></div>
+
+    <button onclick="newGame()">🎮 New Game</button>
+    <button onclick="newGame()">🔄 Reset</button>
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
 </body>
 </html>
