@@ -1,31 +1,10 @@
 from flask import Flask, render_template, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
 
 app = Flask(__name__)
-app.secret_key = "symbol_sudoku_secret_2026"
+app.secret_key = "symbol_sudoku_secret_key_2026"
 
-
-def get_db():
-    conn = sqlite3.connect("users.db")
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def create_table():
-    conn = get_db()
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
-        )
-    """)
-    conn.commit()
-    conn.close()
-
-
-create_table()
+users = {}
 
 
 @app.route("/")
@@ -41,46 +20,25 @@ def signup():
     password = data.get("password", "").strip()
 
     if not username or not password:
-        return jsonify({"success": False, "message": "Enter username and password"})
-
-    if len(password) < 4:
         return jsonify({
             "success": False,
-            "message": "Password must contain at least 4 characters"
+            "message": "Please enter username and password"
         })
 
-    conn = get_db()
-
-    try:
-        conn.execute(
-            "INSERT INTO users (username, password) VALUES (?, ?)",
-            (username, generate_password_hash(password))
-        )
-
-        conn.commit()
-
-        user = conn.execute(
-            "SELECT * FROM users WHERE username = ?",
-            (username,)
-        ).fetchone()
-
-        session["user_id"] = user["id"]
-        session["username"] = user["username"]
-
-        conn.close()
-
-        return jsonify({
-            "success": True,
-            "username": username
-        })
-
-    except sqlite3.IntegrityError:
-        conn.close()
-
+    if username in users:
         return jsonify({
             "success": False,
             "message": "Username already exists"
         })
+
+    users[username] = generate_password_hash(password)
+
+    session["username"] = username
+
+    return jsonify({
+        "success": True,
+        "username": username
+    })
 
 
 @app.route("/login", methods=["POST"])
@@ -90,44 +48,43 @@ def login():
     username = data.get("username", "").strip()
     password = data.get("password", "").strip()
 
-    conn = get_db()
-
-    user = conn.execute(
-        "SELECT * FROM users WHERE username = ?",
-        (username,)
-    ).fetchone()
-
-    conn.close()
-
-    if user and check_password_hash(user["password"], password):
-
-        session["user_id"] = user["id"]
-        session["username"] = user["username"]
-
+    if username not in users:
         return jsonify({
-            "success": True,
-            "username": username
+            "success": False,
+            "message": "User not found"
         })
 
+    if not check_password_hash(users[username], password):
+        return jsonify({
+            "success": False,
+            "message": "Incorrect password"
+        })
+
+    session["username"] = username
+
     return jsonify({
-        "success": False,
-        "message": "Invalid username or password"
+        "success": True,
+        "username": username
     })
 
 
 @app.route("/logout", methods=["POST"])
 def logout():
-    session.clear()
+    session.pop("username", None)
 
-    return jsonify({"success": True})
+    return jsonify({
+        "success": True
+    })
 
 
 @app.route("/user")
 def user():
-    if "username" in session:
+    username = session.get("username")
+
+    if username:
         return jsonify({
             "logged_in": True,
-            "username": session["username"]
+            "username": username
         })
 
     return jsonify({
