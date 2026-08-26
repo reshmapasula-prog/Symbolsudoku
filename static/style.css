@@ -2,7 +2,6 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
 }
 
 body {
@@ -12,136 +11,137 @@ body {
     justify-content: center;
     align-items: center;
 
-    padding: 30px;
+    padding: 30px 15px;
 
-    background: linear-gradient(
-        135deg,
-        #667eea,
-        #764ba2
-    );
+    font-family: Arial, sans-serif;
+
+    background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
-.container {
+.game-card {
     width: 100%;
-    max-width: 700px;
+    max-width: 680px;
 
     background: white;
 
-    border-radius: 25px;
+    padding: 30px;
 
-    padding: 35px;
+    border-radius: 25px;
 
     text-align: center;
 
-    overflow: hidden;
-
-    box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
 }
 
 h1 {
     font-size: 38px;
-    color: #333;
-
-    margin-bottom: 10px;
+    color: #292929;
+    margin-bottom: 8px;
 }
 
-.subtitle {
+p {
     color: #777;
-
-    font-size: 16px;
-
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
-/* SUDOKU BOARD */
+/* PERFECT 9 x 9 SUDOKU BOARD */
 
 #game {
+    width: 100%;
+    max-width: 540px;
+
+    margin: 0 auto;
+
     display: grid;
 
     grid-template-columns: repeat(9, 1fr);
 
-    width: min(540px, 90vw);
-
     aspect-ratio: 1 / 1;
 
-    margin: 25px auto;
+    border: 3px solid #222;
 
-    border: 4px solid #333;
-
-    background: white;
+    overflow: hidden;
 }
 
-/* EACH CELL */
+/* EACH SQUARE */
 
 .cell {
-    width: 100%;
-
-    aspect-ratio: 1 / 1;
+    min-width: 0;
 
     display: flex;
-
     justify-content: center;
     align-items: center;
 
-    border: 1px solid #aaa;
+    background: #ffffff;
 
-    background: #fafafa;
+    border-right: 1px solid #cfcfcf;
+    border-bottom: 1px solid #cfcfcf;
 
-    font-size: 24px;
+    font-size: clamp(16px, 3vw, 26px);
+
+    font-weight: bold;
 
     cursor: pointer;
 
-    transition: 0.2s;
+    user-select: none;
 }
 
-/* HOVER EFFECT */
+/* REMOVE OUTER EXTRA BORDERS */
 
-.cell:hover {
-    background: #e9e5ff;
-
-    transform: scale(1.03);
+.cell:nth-child(9n) {
+    border-right: none;
 }
 
-/* THICK VERTICAL LINES */
+.cell:nth-child(n+73) {
+    border-bottom: none;
+}
+
+/* THICK LINES AFTER COLUMN 3 */
 
 .cell:nth-child(3n) {
-    border-right: 3px solid #333;
+    border-right: 3px solid #222;
 }
 
 .cell:nth-child(9n) {
     border-right: none;
 }
 
-/* THICK HORIZONTAL LINES */
+/* THICK LINE AFTER ROW 3 */
 
-.cell:nth-child(n+19):nth-child(-n+27),
-.cell:nth-child(n+46):nth-child(-n+54) {
-    border-bottom: 3px solid #333;
+.cell:nth-child(n+19):nth-child(-n+27) {
+    border-bottom: 3px solid #222;
 }
 
-/* BUTTON AREA */
+/* THICK LINE AFTER ROW 6 */
 
-.controls {
-    margin-top: 20px;
+.cell:nth-child(n+46):nth-child(-n+54) {
+    border-bottom: 3px solid #222;
+}
+
+/* HOVER */
+
+.cell:hover {
+    background: #e8e5ff;
 }
 
 /* BUTTONS */
 
+.buttons {
+    margin-top: 25px;
+
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
 button {
     border: none;
 
-    padding: 14px 25px;
+    padding: 13px 25px;
 
-    margin: 5px;
+    border-radius: 10px;
 
-    border-radius: 12px;
-
-    background: linear-gradient(
-        135deg,
-        #667eea,
-        #764ba2
-    );
+    background: #5b5bd6;
 
     color: white;
 
@@ -150,42 +150,37 @@ button {
     font-weight: bold;
 
     cursor: pointer;
-
-    transition: 0.2s;
 }
 
 button:hover {
-    transform: translateY(-3px);
-
-    box-shadow:
-        0 8px 20px rgba(102, 126, 234, 0.4);
+    background: #4545b5;
 }
 
 /* MOBILE */
 
 @media (max-width: 600px) {
 
-    body {
-        padding: 15px;
-    }
-
-    .container {
-        padding: 20px;
-
-        border-radius: 20px;
+    .game-card {
+        padding: 20px 12px;
     }
 
     h1 {
         font-size: 28px;
     }
 
-    .cell {
-        font-size: 16px;
+    p {
+        font-size: 14px;
+    }
+
+    #game {
+        width: 100%;
+    }
+
+    .buttons {
+        flex-direction: column;
     }
 
     button {
         width: 100%;
-
-        margin: 5px 0;
     }
 }
