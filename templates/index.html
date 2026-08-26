@@ -4,13 +4,14 @@
     <title>Symbol Sudoku</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
+    <h1>🧩 Symbol Sudoku</h1>
 
-    <h1>Symbol Sudoku</h1>
-
-    <div id="game-board"></div>
-
-    <button onclick="newGame()">New Game</button>
+    <div id="game">
+        <p>Welcome to Symbol Sudoku!</p>
+        <button onclick="newGame()">New Game</button>
+    </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
