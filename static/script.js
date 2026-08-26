@@ -353,3 +353,67 @@ function toggleTheme() {
 
     document.body.classList.toggle("dark");
 }
+// Your existing Sudoku game code above
+
+function chooseSize(size) {
+    // existing code
+}
+
+function startGame() {
+    // existing code
+}
+
+function checkGame() {
+    // existing code
+}
+
+function nextLevel() {
+    // existing code
+}
+
+function toggleTheme() {
+    // existing code
+}
+
+
+/* ==============================
+   LOGIN AND SIGNUP CODE
+   ADD THIS AT THE VERY END
+================================= */
+
+function showLogin() {
+    // paste your full login code here
+}
+
+function showSignup() {
+    // paste your full signup code here
+}
+
+async function loginUser() {
+    // paste your full login code here
+}
+
+async function signupUser() {
+    // paste your full signup code here
+}
+
+function openGameMenu(username) {
+    // paste your full login code here
+}
+
+function showAuthMessage(message, success) {
+    // paste your full login code here
+}
+
+async function logoutUser() {
+    // paste your full login code here
+}
+
+async function checkLoggedInUser() {
+    // paste your full login code here
+}
+
+window.addEventListener(
+    "DOMContentLoaded",
+    checkLoggedInUser
+);
