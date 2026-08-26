@@ -1,6 +1,6 @@
-function newGame() {
-    const symbols = ["★", "♥", "♦", "♣", "●"];
+const symbols = ["★", "♥", "♦", "♣", "●"];
 
+function newGame() {
     const gameArea = document.getElementById("game");
 
     gameArea.innerHTML = "";
@@ -10,9 +10,26 @@ function newGame() {
 
         cell.className = "cell";
 
-        const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+        // Create some empty cells
+        const isEmpty = Math.random() < 0.35;
 
-        cell.textContent = symbol;
+        if (!isEmpty) {
+            const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+            cell.textContent = symbol;
+        } else {
+            cell.textContent = "";
+            cell.classList.add("empty");
+
+            // Click empty cell
+            cell.addEventListener("click", function () {
+                const symbol = symbols[
+                    Math.floor(Math.random() * symbols.length)
+                ];
+
+                cell.textContent = symbol;
+                cell.classList.remove("empty");
+            });
+        }
 
         gameArea.appendChild(cell);
     }
